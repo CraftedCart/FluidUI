@@ -37,6 +37,13 @@ public class UITheme {
     @NotNull public UIColor textFieldPlaceholderColor = UIColor.matWhite(0.5);
     @NotNull public UIColor textFieldCursorColor = UIColor.matBlue();
 
+    //Slider
+    @NotNull public UIColor sliderBackgroundColor = UIColor.matGrey900();
+    @NotNull public UIColor sliderHandleColor = UIColor.matBlue();
+    public double sliderThickness = 4;
+    public double handleThickness = 4;
+    public double sliderHandleHeight = 24;
+
     //General
     public double scrollSmoothing = 24; //Higher values = quicker scrolling
     public double mouseSensitivity = 0.35; //Higher values = greater sensitivity

@@ -1,8 +1,8 @@
 package io.github.craftedcart.fluidui.component;
 
 import io.github.craftedcart.fluidui.theme.ThemeManager;
-import io.github.craftedcart.fluidui.util.PosXY;
 import io.github.craftedcart.fluidui.uiaction.UIAction;
+import io.github.craftedcart.fluidui.util.PosXY;
 import io.github.craftedcart.fluidui.util.UIColor;
 import io.github.craftedcart.fluidui.util.UIUtils;
 import org.jetbrains.annotations.NotNull;

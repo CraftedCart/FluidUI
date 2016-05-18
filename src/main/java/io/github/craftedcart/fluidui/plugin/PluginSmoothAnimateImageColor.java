@@ -1,7 +1,6 @@
 package io.github.craftedcart.fluidui.plugin;
 
 import io.github.craftedcart.fluidui.component.Image;
-import io.github.craftedcart.fluidui.component.Panel;
 import io.github.craftedcart.fluidui.util.MathUtils;
 import io.github.craftedcart.fluidui.util.UIColor;
 import io.github.craftedcart.fluidui.util.UIUtils;

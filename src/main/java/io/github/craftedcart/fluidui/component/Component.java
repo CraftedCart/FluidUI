@@ -1,9 +1,9 @@
 package io.github.craftedcart.fluidui.component;
 
 import io.github.craftedcart.fluidui.plugin.AbstractComponentPlugin;
+import io.github.craftedcart.fluidui.uiaction.UIAction;
 import io.github.craftedcart.fluidui.util.AnchorPoint;
 import io.github.craftedcart.fluidui.util.PosXY;
-import io.github.craftedcart.fluidui.uiaction.UIAction;
 import org.apache.commons.collections4.map.ListOrderedMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
