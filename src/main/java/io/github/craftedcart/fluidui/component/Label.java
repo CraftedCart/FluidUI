@@ -1,6 +1,6 @@
 package io.github.craftedcart.fluidui.component;
 
-import io.github.craftedcart.fluidui.theme.ThemeManager;
+import io.github.craftedcart.fluidui.theme.UITheme;
 import io.github.craftedcart.fluidui.util.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -28,10 +28,28 @@ public class Label extends Component {
     }
 
     public void init() {
-        font = ThemeManager.currentTheme.labelFont;
-        textColor = ThemeManager.currentTheme.labelTextColor;
+        if (parentComponent != null) {
+            setTheme(parentComponent.theme);
+        }
         horizontalAlign = EnumHAlignment.left;
         verticalAlign = EnumVAlignment.top;
+    }
+
+    @Override
+    public void setParentComponent(@Nullable Component parentComponent) {
+        super.setParentComponent(parentComponent);
+
+        if (parentComponent != null) {
+            setTheme(parentComponent.theme);
+        }
+    }
+
+    @Override
+    public void setTheme(@NotNull UITheme theme) {
+        super.setTheme(theme);
+
+        font = parentComponent.theme.labelFont;
+        textColor = parentComponent.theme.labelTextColor;
     }
 
     @Override

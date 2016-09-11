@@ -47,4 +47,13 @@ public class PosXY {
         return new PosXY(MathUtils.lerp(x, targetPos.x, f), MathUtils.lerp(y, targetPos.y, f));
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof PosXY) {
+            PosXY posObj = (PosXY) obj;
+            return posObj.x == x && posObj.y == y;
+        } else {
+            return false;
+        }
+    }
 }

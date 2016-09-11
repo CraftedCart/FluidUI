@@ -1,12 +1,13 @@
 package io.github.craftedcart.fluidui.component;
 
-import io.github.craftedcart.fluidui.theme.ThemeManager;
-import io.github.craftedcart.fluidui.uiaction.UIAction;
+import io.github.craftedcart.fluidui.theme.UITheme;
+import io.github.craftedcart.fluidui.uiaction.UIActionDouble;
 import io.github.craftedcart.fluidui.util.MathUtils;
 import io.github.craftedcart.fluidui.util.PosXY;
 import io.github.craftedcart.fluidui.util.UIColor;
 import io.github.craftedcart.fluidui.util.UIUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.input.Mouse;
 
 /**
@@ -27,7 +28,7 @@ public class Slider extends Component {
 
     public boolean isGrabbed = false;
 
-    public UIAction onValueChangedAction;
+    public UIActionDouble onValueChangedAction;
 
     public Slider() {
         init();
@@ -35,11 +36,29 @@ public class Slider extends Component {
     }
 
     public void init() {
-        backgroundColor = ThemeManager.currentTheme.sliderBackgroundColor;
-        handleColor = ThemeManager.currentTheme.sliderHandleColor;
-        sliderThickness = ThemeManager.currentTheme.sliderThickness;
-        handleHeight = ThemeManager.currentTheme.sliderHandleHeight;
-        handleThickness = ThemeManager.currentTheme.handleThickness;
+        if (parentComponent != null) {
+            setTheme(parentComponent.theme);
+        }
+    }
+
+    @Override
+    public void setParentComponent(@Nullable Component parentComponent) {
+        super.setParentComponent(parentComponent);
+
+        if (parentComponent != null) {
+            setTheme(parentComponent.theme);
+        }
+    }
+
+    @Override
+    public void setTheme(@NotNull UITheme theme) {
+        super.setTheme(theme);
+
+        backgroundColor = theme.sliderBackgroundColor;
+        handleColor = theme.sliderHandleColor;
+        sliderThickness = theme.sliderThickness;
+        handleHeight = theme.sliderHandleHeight;
+        handleThickness = theme.handleThickness;
     }
 
     @Override
@@ -61,7 +80,7 @@ public class Slider extends Component {
                     value = MathUtils.clamp(newValue, minValue, maxValue);
 
                     if (onValueChangedAction != null) {
-                        onValueChangedAction.execute();
+                        onValueChangedAction.execute(value);
                     }
                 }
             } else {
@@ -121,12 +140,12 @@ public class Slider extends Component {
             value = MathUtils.clamp(newValue, minValue, maxValue);
 
             if (onValueChangedAction != null) {
-                onValueChangedAction.execute();
+                onValueChangedAction.execute(value);
             }
         }
     }
 
-    public void setOnValueChangedAction(UIAction onValueChangedAction) {
+    public void setOnValueChangedAction(UIActionDouble onValueChangedAction) {
         this.onValueChangedAction = onValueChangedAction;
     }
 
@@ -143,7 +162,7 @@ public class Slider extends Component {
             this.value = value;
 
             if (onValueChangedAction != null) {
-                onValueChangedAction.execute();
+                onValueChangedAction.execute(value);
             }
         }
     }

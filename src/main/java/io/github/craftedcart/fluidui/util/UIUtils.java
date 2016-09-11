@@ -3,10 +3,12 @@ package io.github.craftedcart.fluidui.util;
 import io.github.craftedcart.fluidui.uiaction.UIAction;
 import org.lwjgl.Sys;
 import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.opengl.Texture;
+import org.newdawn.slick.opengl.TextureImpl;
 
 import java.nio.FloatBuffer;
 
@@ -21,6 +23,36 @@ public class UIUtils {
     private static int mouseDWheel = 0;
     private static int mouseDX = 0;
     private static int mouseDY = 0;
+
+    /**
+     * Sets the projection to an orthographic one<br>
+     * Optionally clears the color and depth buffers<br>
+     * Enables blending<br>
+     * Disables Texture2D<br>
+     * Sets BlendFuncSeparate<br>
+     * Sets the OpenGL bound color to pure white<br>
+     * Unbinds any bound Texture2Ds
+     *
+     * @param clearBuffer Should the color and depth buffers be cleared?
+     */
+    public static void setup(boolean clearBuffer) {
+        GL11.glMatrixMode(GL11.GL_PROJECTION);
+        GL11.glLoadIdentity();
+        GL11.glOrtho(0, Display.getWidth(), Display.getHeight(), 0, 10000, -10000);
+        GL11.glMatrixMode(GL11.GL_MODELVIEW);
+
+        if (clearBuffer) {
+            GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+        }
+
+        GL11.glShadeModel(GL11.GL_SMOOTH);
+        GL11.glEnable(GL11.GL_LINE_SMOOTH);
+
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        GL11.glColor4d(1, 1, 1, 1);
+        TextureImpl.bindNone();
+    }
 
     /**
      * Should be called every frame
@@ -115,11 +147,88 @@ public class UIUtils {
 
     public static void drawTexturedQuad(PosXY p1, PosXY p2, Texture texture) {
         texture.bind();
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glBegin(GL11.GL_QUADS);
         {
             vertTexturedQuad(p1, p2, texture.getWidth(), texture.getHeight());
         }
         GL11.glEnd();
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
+    }
+
+    public static void drawTexturedQuad(PosXY p1, PosXY p2, Texture texture, Slice9PosXY textureSlice9) {
+        texture.bind();
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GL11.glBegin(GL11.GL_QUADS);
+        {
+            //Top Left
+            vertTexturedQuad(p1, p1.add(textureSlice9.topLeftPos),
+                    textureSlice9.topLeftPos.x / texture.getImageWidth() * ((double) texture.getImageWidth() / texture.getTextureWidth()),
+                    textureSlice9.topLeftPos.y / texture.getImageHeight() * ((double) texture.getImageHeight() / texture.getTextureHeight()));
+
+            //Top Middle
+            vertTexturedQuad(p1.add(textureSlice9.topLeftPos.x, 0), new PosXY(p2.x, p1.y).subtract(texture.getImageWidth() - textureSlice9.bottomRightPos.x, -textureSlice9.topLeftPos.y),
+                    textureSlice9.topLeftPos.x / texture.getImageWidth() * ((double) texture.getImageWidth() / texture.getTextureWidth()),
+                    textureSlice9.bottomRightPos.x / texture.getImageWidth() * ((double) texture.getImageWidth() / texture.getTextureWidth()),
+                    0,
+                    textureSlice9.topLeftPos.y / texture.getImageHeight() * ((double) texture.getImageHeight() / texture.getTextureHeight()));
+
+            //Top Right
+            vertTexturedQuad(new PosXY(p2.x, p1.y).subtract(texture.getImageWidth() - textureSlice9.bottomRightPos.x, 0), new PosXY(p2.x, p1.y).add(0, textureSlice9.topLeftPos.y),
+                    textureSlice9.bottomRightPos.x / texture.getImageWidth() * ((double) texture.getImageWidth() / texture.getTextureWidth()),
+                    texture.getWidth(),
+                    0,
+                    textureSlice9.topLeftPos.y / texture.getImageHeight() * ((double) texture.getImageHeight() / texture.getTextureHeight()));
+
+            //Middle Left
+            vertTexturedQuad(p1.add(0, textureSlice9.topLeftPos.y), new PosXY(p1.x, p2.y).add(textureSlice9.topLeftPos.x, -(texture.getImageHeight() - textureSlice9.bottomRightPos.y)),
+                    0,
+                    textureSlice9.topLeftPos.x / texture.getImageWidth() * ((double) texture.getImageWidth() / texture.getTextureWidth()),
+                    textureSlice9.topLeftPos.y / texture.getImageHeight() * ((double) texture.getImageHeight() / texture.getTextureHeight()),
+                    textureSlice9.bottomRightPos.y / texture.getImageHeight() * ((double) texture.getImageHeight() / texture.getTextureHeight()));
+
+            //Middle Middle
+            vertTexturedQuad(p1.add(textureSlice9.topLeftPos),
+                    p2.subtract(texture.getImageWidth() - textureSlice9.bottomRightPos.x, texture.getImageHeight() - textureSlice9.bottomRightPos.y),
+                    textureSlice9.topLeftPos.x / texture.getImageWidth() * ((double) texture.getImageWidth() / texture.getTextureWidth()),
+                    textureSlice9.bottomRightPos.x / texture.getImageWidth() * ((double) texture.getImageWidth() / texture.getTextureWidth()),
+                    textureSlice9.topLeftPos.y / texture.getImageHeight() * ((double) texture.getImageHeight() / texture.getTextureHeight()),
+                    textureSlice9.bottomRightPos.y / texture.getImageHeight() * ((double) texture.getImageHeight() / texture.getTextureHeight()));
+
+            //Middle Right
+            vertTexturedQuad(new PosXY(p2.x, p1.y).subtract(texture.getImageWidth() - textureSlice9.bottomRightPos.x, -textureSlice9.topLeftPos.y),
+                    p2.subtract(0, texture.getImageHeight() - textureSlice9.bottomRightPos.y),
+                    textureSlice9.bottomRightPos.x / texture.getImageWidth() * ((double) texture.getImageWidth() / texture.getTextureWidth()),
+                    texture.getWidth(),
+                    textureSlice9.topLeftPos.y / texture.getImageHeight() * ((double) texture.getImageHeight() / texture.getTextureHeight()),
+                    textureSlice9.bottomRightPos.y / texture.getImageHeight() * ((double) texture.getImageHeight() / texture.getTextureHeight()));
+
+            //Bottom Left
+            vertTexturedQuad(new PosXY(p1.x, p2.y).subtract(0, texture.getImageHeight() - textureSlice9.bottomRightPos.y),
+                    new PosXY(p1.x, p2.y).add(textureSlice9.topLeftPos.x, 0),
+                    0,
+                    textureSlice9.topLeftPos.x / texture.getImageWidth() * ((double) texture.getImageWidth() / texture.getTextureWidth()),
+                    textureSlice9.bottomRightPos.y / texture.getImageHeight() * ((double) texture.getImageHeight() / texture.getTextureHeight()),
+                    texture.getHeight());
+
+            //Bottom Left
+            vertTexturedQuad(new PosXY(p1.x, p2.y).subtract(-textureSlice9.topLeftPos.x, texture.getImageHeight() - textureSlice9.bottomRightPos.y),
+                    p2.subtract(texture.getImageWidth() - textureSlice9.bottomRightPos.x, 0),
+                    textureSlice9.topLeftPos.x / texture.getImageWidth() * ((double) texture.getImageWidth() / texture.getTextureWidth()),
+                    textureSlice9.bottomRightPos.x / texture.getImageWidth() * ((double) texture.getImageWidth() / texture.getTextureWidth()),
+                    textureSlice9.bottomRightPos.y / texture.getImageHeight() * ((double) texture.getImageHeight() / texture.getTextureHeight()),
+                    texture.getHeight());
+
+            //Bottom Right
+            vertTexturedQuad(p2.subtract(texture.getImageWidth() - textureSlice9.bottomRightPos.x, texture.getImageHeight() - textureSlice9.bottomRightPos.y),
+                    p2,
+                    textureSlice9.bottomRightPos.x / texture.getImageWidth() * ((double) texture.getImageWidth() / texture.getTextureWidth()),
+                    texture.getWidth(),
+                    textureSlice9.bottomRightPos.y / texture.getImageHeight() * ((double) texture.getImageHeight() / texture.getTextureHeight()),
+                    texture.getHeight());
+        }
+        GL11.glEnd();
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
     }
 
     public static void vertTexturedQuad(PosXY p1, PosXY p2, double texWidth, double texHeight) {
@@ -130,6 +239,17 @@ public class UIUtils {
         GL11.glTexCoord2d(texWidth, texHeight);
         GL11.glVertex2d(p2.x, p2.y);
         GL11.glTexCoord2d(texWidth, 0);
+        GL11.glVertex2d(p2.x, p1.y);
+    }
+
+    public static void vertTexturedQuad(PosXY p1, PosXY p2, double texX1, double texX2, double texY1, double texY2) {
+        GL11.glTexCoord2d(texX1, texY1);
+        GL11.glVertex2d(p1.x, p1.y);
+        GL11.glTexCoord2d(texX1, texY2);
+        GL11.glVertex2d(p1.x, p2.y);
+        GL11.glTexCoord2d(texX2, texY2);
+        GL11.glVertex2d(p2.x, p2.y);
+        GL11.glTexCoord2d(texX2, texY1);
         GL11.glVertex2d(p2.x, p1.y);
     }
 

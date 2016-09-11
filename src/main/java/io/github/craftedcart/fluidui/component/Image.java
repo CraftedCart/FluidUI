@@ -1,8 +1,6 @@
 package io.github.craftedcart.fluidui.component;
 
-import io.github.craftedcart.fluidui.util.PosXY;
-import io.github.craftedcart.fluidui.util.UIColor;
-import io.github.craftedcart.fluidui.util.UIUtils;
+import io.github.craftedcart.fluidui.util.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.opengl.Display;
@@ -15,8 +13,10 @@ import org.newdawn.slick.opengl.Texture;
  */
 public class Image extends Component {
 
-    @Nullable private Texture texture;
+    @Nullable public Texture texture;
+    @Nullable public Slice9PosXY textureSlice9;
     @NotNull public UIColor color = UIColor.pureWhite();
+    @NotNull public EnumImageScaling imageScaling = EnumImageScaling.scale;
 
     public Image() {
         postInit();
@@ -32,23 +32,49 @@ public class Image extends Component {
     public void componentDraw() {
         if (texture != null) {
             double texRatio = texture.getHeight() / (double) texture.getWidth(); //Get the aspect ratio of the texture
-            double height;
-            double width;
-            if (Display.getHeight() / (double) Display.getWidth() > texRatio) {
-                height = this.height;
-                width = (int) (height / texRatio);
-            } else {
-                width = this.width;
-                height = (int) (width * texRatio);
+            double height = 0;
+            double width = 0;
+
+            if (imageScaling == EnumImageScaling.scale) { //Scale
+                if (this.height / this.width > texRatio) {
+                    height = this.height;
+                    width = (int) (height / texRatio);
+                } else {
+                    width = this.width;
+                    height = (int) (width * texRatio);
+                }
+            } else if (imageScaling == EnumImageScaling.fit) { //Fit
+                if (this.height / this.width < texRatio) {
+                    height = this.height;
+                    width = (int) (height / texRatio);
+                } else {
+                    width = this.width;
+                    height = (int) (width * texRatio);
+                }
+            } else if (imageScaling == EnumImageScaling.stretch) { //Stretch
+                width = this.width * texture.getWidth();
+                height = this.height * texture.getHeight();
             }
 
-            GL11.glEnable(GL11.GL_TEXTURE_2D);
-            color.bindColor();
-            UIUtils.drawTexturedQuad(
-                    new PosXY(topLeftPx.x + this.width / 2 - width / 2, topLeftPx.y + this.height / 2 - height / 2),
-                    new PosXY(topLeftPx.x + this.width / 2 + width / 2, topLeftPx.y + this.height / 2 + height / 2),
-                    texture);
-            GL11.glDisable(GL11.GL_TEXTURE_2D);
+            if (textureSlice9 == null) {
+                UIUtils.setupStencilMask();
+                UIUtils.drawQuad(topLeftPx, bottomRightPx, UIColor.pureWhite());
+                UIUtils.setupStencilDraw();
+                color.bindColor();
+                UIUtils.drawTexturedQuad(
+                        new PosXY(topLeftPx.x + this.width / 2 - width / 2, topLeftPx.y + this.height / 2 - height / 2),
+                        new PosXY(topLeftPx.x + this.width / 2 + width / 2, topLeftPx.y + this.height / 2 + height / 2),
+                        texture);
+                UIUtils.setupStencilEnd();
+            } else {
+                color.bindColor();
+                UIUtils.drawTexturedQuad(
+                        topLeftPx,
+                        bottomRightPx,
+                        texture,
+                        textureSlice9);
+            }
+
         }
     }
 
@@ -56,12 +82,15 @@ public class Image extends Component {
         this.texture = texture;
     }
 
-    @Nullable
-    public Texture getTexture() {
-        return texture;
+    public void setTextureSlice9(@Nullable Slice9PosXY textureSlice9) {
+        this.textureSlice9 = textureSlice9;
     }
 
     public void setColor(@NotNull UIColor color) {
         this.color = color;
+    }
+
+    public void setImageScaling(@NotNull EnumImageScaling imageScaling) {
+        this.imageScaling = imageScaling;
     }
 }

@@ -1,9 +1,11 @@
 package io.github.craftedcart.fluidui.component;
 
-import io.github.craftedcart.fluidui.theme.ThemeManager;
+import io.github.craftedcart.fluidui.theme.UITheme;
 import io.github.craftedcart.fluidui.util.UIColor;
 import io.github.craftedcart.fluidui.util.UIUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.lwjgl.opengl.GL11;
 
 /**
  * @author CraftedCart
@@ -19,7 +21,25 @@ public class Panel extends Component {
     }
 
     public void init() {
-        backgroundColor = ThemeManager.currentTheme.panelBackgroundColor;
+        if (parentComponent != null) {
+            setTheme(parentComponent.theme);
+        }
+    }
+
+    @Override
+    public void setParentComponent(@Nullable Component parentComponent) {
+        super.setParentComponent(parentComponent);
+
+        if (parentComponent != null) {
+            setTheme(parentComponent.theme);
+        }
+    }
+
+    @Override
+    public void setTheme(@NotNull UITheme theme) {
+        super.setTheme(theme);
+
+        backgroundColor = theme.panelBackgroundColor;
     }
 
     public void draw() {

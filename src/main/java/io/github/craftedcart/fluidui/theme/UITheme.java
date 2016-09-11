@@ -2,6 +2,7 @@ package io.github.craftedcart.fluidui.theme;
 
 import io.github.craftedcart.fluidui.util.EnumHAlignment;
 import io.github.craftedcart.fluidui.util.EnumVAlignment;
+import io.github.craftedcart.fluidui.util.PosXY;
 import io.github.craftedcart.fluidui.util.UIColor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -16,13 +17,23 @@ public class UITheme {
     //Panel
     @NotNull public UIColor panelBackgroundColor = UIColor.matGrey900();
 
-    //TextButton
+    //Gradient Panel
+    @NotNull public UIColor gradientPanelBackgroundColorFrom = UIColor.matGrey900();
+    @NotNull public UIColor gradientPanelBackgroundColorTo = UIColor.matGrey900(0);
+
+    //Button
     @NotNull public UIColor buttonBackgroundIdleColor = UIColor.matBlue();
     @NotNull public UIColor buttonBackgroundActiveColor = UIColor.matBlueGrey();
     @NotNull public UIColor buttonBackgroundHitColor = UIColor.matBlueGrey700();
+
+    //TextButton
     @NotNull public UIColor buttonTextColor = UIColor.matWhite();
     @NotNull public EnumHAlignment buttonTextHAlign = EnumHAlignment.centre;
     @NotNull public EnumVAlignment buttonTextVAlign = EnumVAlignment.centre;
+
+    //CheckBox
+    @NotNull public UIColor checkBoxUncheckedColor = UIColor.matGrey900();
+    @NotNull public UIColor checkBoxCheckedColor = UIColor.matBlue();
 
     //Label
     @Nullable public UnicodeFont labelFont;
@@ -44,11 +55,17 @@ public class UITheme {
     public double handleThickness = 4;
     public double sliderHandleHeight = 24;
 
+    //Tooltips
+    @Nullable public UnicodeFont tooltipFont;
+    @NotNull public UIColor tooltipColor = UIColor.matGrey900(0.5);
+    @NotNull public UIColor tooltipTextColor = UIColor.matWhite();
+    @NotNull public PosXY tooltipMouseOffset = new PosXY(24, 24);
+
     //General
     public double scrollSmoothing = 24; //Higher values = quicker scrolling
     public double mouseSensitivity = 0.35; //Higher values = greater sensitivity
-    public UIColor scrollbarBG = UIColor.matBlueGrey700();
-    public UIColor scrollbarFG = UIColor.matBlueGrey300();
+    @NotNull public UIColor scrollbarBG = UIColor.matBlueGrey700();
+    @NotNull public UIColor scrollbarFG = UIColor.matBlueGrey300();
     public double scrollbarThickness = 12;
 
 }

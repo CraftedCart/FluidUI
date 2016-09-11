@@ -1,12 +1,15 @@
 package io.github.craftedcart.fluidui.component;
 
 import io.github.craftedcart.fluidui.plugin.AbstractComponentPlugin;
-import io.github.craftedcart.fluidui.theme.ThemeManager;
+import io.github.craftedcart.fluidui.theme.UITheme;
 import io.github.craftedcart.fluidui.util.PosXY;
+import io.github.craftedcart.fluidui.util.Slice9PosXY;
 import io.github.craftedcart.fluidui.util.UIColor;
 import io.github.craftedcart.fluidui.util.UIUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.input.Mouse;
+import org.newdawn.slick.opengl.Texture;
 
 import java.util.Map;
 
@@ -20,6 +23,9 @@ public class TextButton extends Label {
     @SuppressWarnings("NullableProblems") @NotNull public UIColor backgroundActiveColor;
     @SuppressWarnings("NullableProblems") @NotNull public UIColor backgroundHitColor;
 
+    @Nullable public Texture texture;
+    @Nullable public Slice9PosXY textureSlice9;
+
     public TextButton() {
         init();
         postInit();
@@ -28,12 +34,30 @@ public class TextButton extends Label {
     public void init() {
         super.init();
 
-        backgroundIdleColor = ThemeManager.currentTheme.buttonBackgroundIdleColor;
-        backgroundActiveColor = ThemeManager.currentTheme.buttonBackgroundActiveColor;
-        backgroundHitColor = ThemeManager.currentTheme.buttonBackgroundHitColor;
-        textColor = ThemeManager.currentTheme.buttonTextColor;
-        horizontalAlign = ThemeManager.currentTheme.buttonTextHAlign;
-        verticalAlign = ThemeManager.currentTheme.buttonTextVAlign;
+        if (parentComponent != null) {
+            setTheme(parentComponent.theme);
+        }
+    }
+
+    @Override
+    public void setParentComponent(@Nullable Component parentComponent) {
+        super.setParentComponent(parentComponent);
+
+        if (parentComponent != null) {
+            setTheme(parentComponent.theme);
+        }
+    }
+
+    @Override
+    public void setTheme(@NotNull UITheme theme) {
+        super.setTheme(theme);
+
+        backgroundIdleColor = theme.buttonBackgroundIdleColor;
+        backgroundActiveColor = theme.buttonBackgroundActiveColor;
+        backgroundHitColor = theme.buttonBackgroundHitColor;
+        textColor = theme.buttonTextColor;
+        horizontalAlign = theme.buttonTextHAlign;
+        verticalAlign = theme.buttonTextVAlign;
     }
 
     public void draw() {
@@ -54,7 +78,16 @@ public class TextButton extends Label {
             buttonBackgroundColor = backgroundIdleColor;
         }
 
-        UIUtils.drawQuad(topLeftPx, bottomRightPx, buttonBackgroundColor);
+        if (texture == null) {
+            UIUtils.drawQuad(topLeftPx, bottomRightPx, buttonBackgroundColor);
+        } else {
+                buttonBackgroundColor.bindColor();
+            if (textureSlice9 == null) {
+                UIUtils.drawTexturedQuad(topLeftPx, bottomRightPx, texture);
+            } else {
+                UIUtils.drawTexturedQuad(topLeftPx, bottomRightPx, texture, textureSlice9);
+            }
+        }
 
         super.componentDraw();
     }
@@ -90,6 +123,14 @@ public class TextButton extends Label {
         if (onLMBAction != null) {
             onLMBAction.execute();
         }
+    }
+
+    public void setTexture(@Nullable Texture texture) {
+        this.texture = texture;
+    }
+
+    public void setTextureSlice9(@Nullable Slice9PosXY textureSlice9) {
+        this.textureSlice9 = textureSlice9;
     }
 
 }

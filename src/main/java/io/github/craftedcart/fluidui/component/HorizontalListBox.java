@@ -16,15 +16,15 @@ import java.util.Map;
 
 /**
  * @author CraftedCart
- * Created on 03/03/2016 (DD/MM/YYYY)
+ * Created on 26/07/2016 (DD/MM/YYYY)
  */
-public class ListBox extends Panel {
+public class HorizontalListBox extends Panel {
 
     public List<String> childComponentOrder = new ArrayList<String>();
     public double childComponentSpacing = 2;
     public double scrollOffset = 0;
     public double smoothedScrollOffset = 0;
-    public double heightOfAllChildren = 0;
+    public double widthOfAllChildren = 0;
 
     public double scrollbarThickness;
     public UIColor scrollbarBG;
@@ -32,7 +32,7 @@ public class ListBox extends Panel {
     public double mouseSensitivity;
     public double scrollSmoothing;
 
-    public ListBox() {
+    public HorizontalListBox() {
         init();
         postInit();
     }
@@ -76,10 +76,43 @@ public class ListBox extends Panel {
         UIUtils.drawQuad(topLeftPx, bottomRightPx, backgroundColor);
     }
 
+    private void detectScroll() {
+        if (mouseOver) {
+            scrollOffset += UIUtils.getMouseDWheel() * mouseSensitivity;
+        }
+
+        if (widthOfAllChildren > width) {
+            scrollOffset = MathUtils.clamp(scrollOffset, -(widthOfAllChildren - width), 0);
+        } else {
+            scrollOffset = 0;
+        }
+
+        smoothedScrollOffset = MathUtils.lerp(smoothedScrollOffset, scrollOffset, Math.min(UIUtils.getDelta() * scrollSmoothing, 1));
+    }
+
+    public double getSizeOfChildren(int maxComponentIndex) {
+        double childrenWidth = 0;
+        for (int i = 0; i < maxComponentIndex; i++) { //Loop over components
+            Component component = childComponents.get(childComponentOrder.get(i));
+            if (component.isVisible()) { //If the component is visible
+                childrenWidth += component.width + childComponentSpacing; //Add the height
+            }
+        }
+        return childrenWidth;
+    }
+
+    public double getSizeOfChildren() {
+        return getSizeOfChildren(childComponentOrder.size());
+    }
+
+    public void setBackgroundColor(@NotNull UIColor backgroundColor) {
+        this.backgroundColor = backgroundColor;
+    }
+
     @Override
     public void postDraw() {
         GL11.glPushMatrix();
-        GL11.glTranslated(0, smoothedScrollOffset, 0);
+        GL11.glTranslated(smoothedScrollOffset, 0, 0);
 
         for (AbstractComponentPlugin plugin : plugins) { //Plugins
             plugin.onPostDraw();
@@ -100,44 +133,11 @@ public class ListBox extends Panel {
         GL11.glPopMatrix();
 
         //Scroll bar
-        UIUtils.drawQuad(new PosXY(bottomRightPx.x - scrollbarThickness, topLeftPx.y), bottomRightPx, scrollbarBG);
-        double scrollPercent = smoothedScrollOffset / (heightOfAllChildren - height);
-        double scrollbarHeight = Math.min(Math.max(24, height / heightOfAllChildren * height), height);
-        UIUtils.drawQuad(new PosXY(bottomRightPx.x - scrollbarThickness, topLeftPx.y - (height - scrollbarHeight) * scrollPercent),
-                new PosXY(bottomRightPx.x, topLeftPx.y - (height - scrollbarHeight) * scrollPercent + scrollbarHeight), scrollbarFG);
-    }
-
-    private void detectScroll() {
-        if (mouseOver) {
-            scrollOffset += UIUtils.getMouseDWheel() * mouseSensitivity;
-        }
-
-        if (heightOfAllChildren > height) {
-            scrollOffset = MathUtils.clamp(scrollOffset, -(heightOfAllChildren - height), 0);
-        } else {
-            scrollOffset = 0;
-        }
-
-        smoothedScrollOffset = MathUtils.lerp(smoothedScrollOffset, scrollOffset, Math.min(UIUtils.getDelta() * scrollSmoothing, 1));
-    }
-
-    public void setBackgroundColor(@NotNull UIColor backgroundColor) {
-        this.backgroundColor = backgroundColor;
-    }
-
-    public double getSizeOfChildren(int maxComponentIndex) {
-        double childrenHeight = 0;
-        for (int i = 0; i < maxComponentIndex; i++) { //Loop over components
-            Component component = childComponents.get(childComponentOrder.get(i));
-            if (component.isVisible()) { //If the component is visible
-                childrenHeight += component.height + childComponentSpacing; //Add the height
-            }
-        }
-        return childrenHeight;
-    }
-
-    public double getSizeOfChildren() {
-        return getSizeOfChildren(childComponentOrder.size());
+        UIUtils.drawQuad(new PosXY(topLeftPx.x, bottomRightPx.y - scrollbarThickness), bottomRightPx, scrollbarBG);
+        double scrollPercent = smoothedScrollOffset / (widthOfAllChildren - width);
+        double scrollbarHeight = Math.min(Math.max(24, width / widthOfAllChildren * width), width);
+        UIUtils.drawQuad(new PosXY(topLeftPx.x, bottomRightPx.y  - scrollbarThickness - (width - scrollbarHeight) * scrollPercent),
+                new PosXY(topLeftPx.x - (width - scrollbarHeight) * scrollPercent + scrollbarHeight, bottomRightPx.y), scrollbarFG);
     }
 
     @Override
@@ -145,16 +145,16 @@ public class ListBox extends Panel {
         super.addChildComponent(component);
         component.preDraw();
 
-        double lastHeight = heightOfAllChildren;
+        double lastWidth = widthOfAllChildren;
 
         childComponentOrder.add(component.name);
 
-        component.setTopLeftPos(0, lastHeight);
-        component.setBottomRightPos(-scrollbarThickness, lastHeight + component.height);
+        component.setTopLeftPos(lastWidth, 0);
+        component.setBottomRightPos(lastWidth + component.width, -scrollbarThickness);
         component.setTopLeftAnchor(0, 0);
-        component.setBottomRightAnchor(1, 0);
+        component.setBottomRightAnchor(0, 1);
 
-        heightOfAllChildren = getSizeOfChildren();
+        widthOfAllChildren = getSizeOfChildren();
     }
 
     @Override
@@ -162,41 +162,41 @@ public class ListBox extends Panel {
         super.addChildComponent(component, index);
         component.preDraw();
 
-        double lastHeight = getSizeOfChildren(index);
+        double lastWidth = getSizeOfChildren(index);
 
         childComponentOrder.add(index, component.name);
 
-        component.setTopLeftPos(0, lastHeight);
-        component.setBottomRightPos(-scrollbarThickness, lastHeight + component.height);
+        component.setTopLeftPos(lastWidth, 0);
+        component.setBottomRightPos(lastWidth + component.width, -scrollbarThickness);
         component.setTopLeftAnchor(0, 0);
-        component.setBottomRightAnchor(1, 0);
+        component.setBottomRightAnchor(0, 1);
 
         for (int i = index + 1; i < childComponentOrder.size(); i++) {
             Component iterComponent = childComponents.get(childComponentOrder.get(i));
             //noinspection ConstantConditions
-            iterComponent.setTopLeftPos(0, iterComponent.topLeftPos.y + component.height + childComponentSpacing);
+            iterComponent.setTopLeftPos(iterComponent.topLeftPos.x + component.width + childComponentSpacing, 0);
             //noinspection ConstantConditions
-            iterComponent.setBottomRightPos(-scrollbarThickness, iterComponent.bottomRightPos.y + component.height + childComponentSpacing);
+            iterComponent.setBottomRightPos(iterComponent.bottomRightPos.x + component.width + childComponentSpacing, -scrollbarThickness);
         }
 
-        heightOfAllChildren = getSizeOfChildren();
+        widthOfAllChildren = getSizeOfChildren();
     }
 
     public void reorganizeChildComponents() {
-        double childrenHeight = 0;
+        double childrenWidth = 0;
         for (int i = 0; i < childComponents.size(); i++) { //Loop over components
             Component component = childComponents.get(childComponentOrder.get(i));
             if (component.isVisible()) { //If the component is visible
-                double componentHeight = component.height;
+                double componentWidth = component.width;
 
-                component.setTopLeftPos(0, childrenHeight);
-                component.setBottomRightPos(-scrollbarThickness, childrenHeight + componentHeight);
+                component.setTopLeftPos(childrenWidth, 0);
+                component.setBottomRightPos(childrenWidth + componentWidth, -scrollbarThickness);
 
-                childrenHeight += componentHeight + childComponentSpacing; //Add the height
+                childrenWidth += componentWidth + childComponentSpacing; //Add the height
             }
         }
 
-        heightOfAllChildren = childrenHeight;
+        widthOfAllChildren = childrenWidth;
     }
 
     public void setChildComponentSpacing(double childComponentSpacing) {

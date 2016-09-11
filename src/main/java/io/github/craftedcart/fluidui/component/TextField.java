@@ -1,6 +1,6 @@
 package io.github.craftedcart.fluidui.component;
 
-import io.github.craftedcart.fluidui.theme.ThemeManager;
+import io.github.craftedcart.fluidui.theme.UITheme;
 import io.github.craftedcart.fluidui.uiaction.UIAction;
 import io.github.craftedcart.fluidui.util.PosXY;
 import io.github.craftedcart.fluidui.util.UIColor;
@@ -32,12 +32,31 @@ public class TextField extends Label {
 
     @Nullable public UIAction onTabAction;
     @Nullable public UIAction onReturnAction;
+    @Nullable public UIAction onValueChangedAction;
 
     public TextField() {
-        backgroundColor = ThemeManager.currentTheme.textFieldBackgroundColor;
-        valueColor = ThemeManager.currentTheme.textFieldValueColor;
-        placeholderColor = ThemeManager.currentTheme.textFieldPlaceholderColor;
-        cursorColor = ThemeManager.currentTheme.textFieldCursorColor;
+        if (parentComponent != null) {
+            setTheme(parentComponent.theme);
+        }
+    }
+
+    @Override
+    public void setParentComponent(@Nullable Component parentComponent) {
+        super.setParentComponent(parentComponent);
+
+        if (parentComponent != null) {
+            setTheme(parentComponent.theme);
+        }
+    }
+
+    @Override
+    public void setTheme(@NotNull UITheme theme) {
+        super.setTheme(theme);
+
+        backgroundColor = theme.textFieldBackgroundColor;
+        valueColor = theme.textFieldValueColor;
+        placeholderColor = theme.textFieldPlaceholderColor;
+        cursorColor = theme.textFieldCursorColor;
     }
 
     @Override
@@ -125,7 +144,6 @@ public class TextField extends Label {
 
         if (button == 0) { //If LMB
             setSelected(true);
-            Keyboard.enableRepeatEvents(true); //Enable key repeats
         }
     }
 
@@ -133,7 +151,6 @@ public class TextField extends Label {
     public void onClickAnywhere(int button, PosXY mousePos) {
         super.onClickAnywhere(button, mousePos);
         setSelected(false);
-        Keyboard.enableRepeatEvents(false); //Disable key repeats
     }
 
     @Override
@@ -149,6 +166,10 @@ public class TextField extends Label {
                         value = new StringBuilder(value).deleteCharAt(cursorPos - 1).toString();
                     }
                     cursorPos--;
+
+                    if (onValueChangedAction != null) {
+                        onValueChangedAction.execute();
+                    }
                 }
             } else if (key == Keyboard.KEY_TAB) {
                 if (onTabAction != null) { //If an onTabAction is set
@@ -156,13 +177,17 @@ public class TextField extends Label {
                 }
             } else if (key == Keyboard.KEY_RETURN) {
                 if (onReturnAction != null) { //If an onReturnAction is set
-                    onReturnAction.execute(); //Execute ot
+                    onReturnAction.execute(); //Execute it
                 }
             } else if (Pattern.matches("[A-Za-z0-9\\s_\\+\\-\\.,!@#\\$%\\^&\\*\\(\\);\\\\/\\|<>\"'\\[\\]\\?=:]", String.valueOf(keyChar))) {
                 //A normal character was entered
                 if (inputRegexCheck == null || Pattern.matches(inputRegexCheck, String.valueOf(keyChar))) {
                     value = new StringBuilder(value).insert(cursorPos, keyChar).toString();
                     cursorPos++;
+
+                    if (onValueChangedAction != null) {
+                        onValueChangedAction.execute();
+                    }
                 }
             }
         }
@@ -176,8 +201,18 @@ public class TextField extends Label {
         this.onReturnAction = onReturnAction;
     }
 
+    public void setOnValueChangedAction(@Nullable UIAction onValueChangedAction) {
+        this.onValueChangedAction = onValueChangedAction;
+    }
+
     public void setSelected(boolean selected) {
         isSelected = selected;
+
+        if (selected) {
+            Keyboard.enableRepeatEvents(true); //Enable key repeats
+        } else {
+            Keyboard.enableRepeatEvents(false); //Disable key repeats
+        }
     }
 
     public void setInputRegexCheck(@Nullable String inputRegexCheck) {

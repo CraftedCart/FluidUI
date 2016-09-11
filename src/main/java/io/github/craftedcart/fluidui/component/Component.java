@@ -1,19 +1,25 @@
 package io.github.craftedcart.fluidui.component;
 
 import io.github.craftedcart.fluidui.plugin.AbstractComponentPlugin;
+import io.github.craftedcart.fluidui.theme.UITheme;
 import io.github.craftedcart.fluidui.uiaction.UIAction;
 import io.github.craftedcart.fluidui.util.AnchorPoint;
 import io.github.craftedcart.fluidui.util.PosXY;
+import io.github.craftedcart.fluidui.util.UIColor;
+import io.github.craftedcart.fluidui.util.UIUtils;
 import org.apache.commons.collections4.map.ListOrderedMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
+import org.newdawn.slick.UnicodeFont;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author CraftedCart
@@ -68,6 +74,18 @@ public class Component {
     @Nullable public UIAction onInitAction;
     @Nullable public UIAction onLMBAction;
 
+    @NotNull public UITheme theme = new UITheme();
+
+    @Nullable public String tooltip;
+    @Nullable public UnicodeFont tooltipFont;
+    @SuppressWarnings("NullableProblems") @NotNull public UIColor tooltipColor;
+    @SuppressWarnings("NullableProblems") @NotNull public UIColor tooltipTextColor;
+    //Use the above to create a tooltip, or create a custom tooltip. Not both!
+    @Nullable public Component customTooltip;
+
+    @SuppressWarnings("NullableProblems") @NotNull public PosXY tooltipMouseOffset;
+    public boolean showTooltipIfMouseOverChildComponent = false;
+
     /**
      * Other components should call this after init()
      */
@@ -89,14 +107,18 @@ public class Component {
 
     public void preDraw() {
         if (topLeftPos != null && bottomRightPos != null &&
-                topLeftAnchor != null && bottomRightAnchor != null &&
-                parentComponent != null) {
-            topLeftPx = new PosXY(
-                    parentComponent.topLeftPx.x + parentComponent.width * topLeftAnchor.xPercent + topLeftPos.x,
-                    parentComponent.topLeftPx.y + parentComponent.height * topLeftAnchor.yPercent + topLeftPos.y);
-            bottomRightPx = new PosXY(
-                    parentComponent.topLeftPx.x + parentComponent.width * bottomRightAnchor.xPercent + bottomRightPos.x,
-                    parentComponent.topLeftPx.y + parentComponent.height * bottomRightAnchor.yPercent + bottomRightPos.y);
+                topLeftAnchor != null && bottomRightAnchor != null) {
+            if (parentComponent != null) {
+                topLeftPx = new PosXY(
+                        parentComponent.topLeftPx.x + parentComponent.width * topLeftAnchor.xPercent + topLeftPos.x,
+                        parentComponent.topLeftPx.y + parentComponent.height * topLeftAnchor.yPercent + topLeftPos.y);
+                bottomRightPx = new PosXY(
+                        parentComponent.topLeftPx.x + parentComponent.width * bottomRightAnchor.xPercent + bottomRightPos.x,
+                        parentComponent.topLeftPx.y + parentComponent.height * bottomRightAnchor.yPercent + bottomRightPos.y);
+            } else { //If there's no parentComponent, start from 0, 0
+                topLeftPx = topLeftPos;
+                bottomRightPx = bottomRightPos;
+            }
         }
 
         if (topLeftPos != null && bottomRightPos != null) {
@@ -126,6 +148,8 @@ public class Component {
                 childComponent.draw();
             }
         }
+
+        checkDrawTooltips();
     }
 
     protected void getParentMousePos() {
@@ -323,6 +347,117 @@ public class Component {
 
     public boolean isVisible() {
         return visible;
+    }
+
+    public void setTheme(@NotNull UITheme theme) {
+        this.theme = theme;
+
+        setTooltipFont(theme.tooltipFont);
+        setTooltipColor(theme.tooltipColor);
+        setTooltipTextColor(theme.tooltipTextColor);
+        setTooltipMouseOffset(theme.tooltipMouseOffset);
+    }
+
+    public void setTooltip(@Nullable String tooltip) {
+        this.tooltip = tooltip;
+    }
+
+    public void setTooltipColor(@NotNull UIColor tooltipColor) {
+        this.tooltipColor = tooltipColor;
+    }
+
+    public void setTooltipTextColor(@NotNull UIColor tooltipTextColor) {
+        this.tooltipTextColor = tooltipTextColor;
+    }
+
+    public void setTooltipFont(@Nullable UnicodeFont tooltipFont) {
+        this.tooltipFont = tooltipFont;
+    }
+
+    public void setCustomTooltip(@Nullable Component customTooltip) {
+        this.customTooltip = customTooltip;
+    }
+
+    public void setTooltipMouseOffset(@NotNull PosXY tooltipMouseOffset) {
+        this.tooltipMouseOffset = tooltipMouseOffset;
+    }
+
+    public void setShowTooltipIfMouseOverChildComponent(boolean showTooltipIfMouseOverChildComponent) {
+        this.showTooltipIfMouseOverChildComponent = showTooltipIfMouseOverChildComponent;
+    }
+
+    public void checkDrawTooltips() {
+        if (mouseOver) {
+            if (!showTooltipIfMouseOverChildComponent) {
+                for (Map.Entry<String, Component> entry : childComponents.entrySet()) {
+                    if (entry.getValue().mouseOver) { //If the mouse is over a child component, return
+                        return;
+                    }
+                }
+            }
+
+            //Draw the tooltip
+            drawTooltip();
+        }
+    }
+
+    public void drawTooltip() {
+        if (tooltipFont != null && tooltip != null && !tooltip.isEmpty() && mousePos != null) {
+            GL11.glPushMatrix();
+            GL11.glLoadIdentity();
+
+            int tooltipWidth = tooltipFont.getWidth(tooltip) + 8;
+            int tooltipHeight = tooltipFont.getLineHeight() + 8;
+            PosXY tooltipPos = mousePos;
+
+            if (tooltipPos.add(tooltipMouseOffset.x, 0).x + tooltipWidth < Display.getWidth()) { //It can be on the right
+                if (tooltipPos.subtract(0, tooltipMouseOffset.y).y - tooltipHeight > 0) { //It can be above
+                    tooltipPos = tooltipPos.add(tooltipMouseOffset.x, -tooltipMouseOffset.y).subtract(0, tooltipHeight);
+                } else { //It will be below
+                    tooltipPos = tooltipPos.add(tooltipMouseOffset.x, tooltipMouseOffset.y);
+                }
+            } else { //It will be on the left
+                if (tooltipPos.subtract(0, tooltipMouseOffset.y).y - tooltipHeight > 0) { //It can be above
+                    tooltipPos = tooltipPos.add(-tooltipMouseOffset.x, -tooltipMouseOffset.y).subtract(tooltipWidth, tooltipHeight);
+                } else { //It will be below
+                    tooltipPos = tooltipPos.add(-tooltipMouseOffset.x, tooltipMouseOffset.y).subtract(tooltipWidth, 0);
+                }
+            }
+
+            UIUtils.drawQuad(tooltipPos, tooltipPos.add(new PosXY(tooltipWidth, tooltipHeight)), tooltipColor);
+            UIUtils.drawString(tooltipFont, tooltipPos.add(4, 4), tooltip, tooltipTextColor);
+
+            GL11.glPopMatrix();
+        } else if (customTooltip != null && mousePos != null) {
+            GL11.glPushMatrix();
+            GL11.glLoadIdentity();
+
+            customTooltip.postInit();
+            customTooltip.preDraw();
+
+            double tooltipWidth = customTooltip.width;
+            double tooltipHeight = customTooltip.height;
+            PosXY tooltipPos = mousePos;
+
+            if (tooltipPos.add(tooltipMouseOffset.x, 0).x + tooltipWidth < Display.getWidth()) { //It can be on the right
+                if (tooltipPos.subtract(0, tooltipMouseOffset.y).y - tooltipHeight > 0) { //It can be above
+                    tooltipPos = tooltipPos.add(tooltipMouseOffset.x, -tooltipMouseOffset.y).subtract(0, tooltipHeight);
+                } else { //It will be below
+                    tooltipPos = tooltipPos.add(tooltipMouseOffset.x, tooltipMouseOffset.y);
+                }
+            } else { //It will be on the left
+                if (tooltipPos.subtract(0, tooltipMouseOffset.y).y - tooltipHeight > 0) { //It can be above
+                    tooltipPos = tooltipPos.add(-tooltipMouseOffset.x, -tooltipMouseOffset.y).subtract(tooltipWidth, tooltipHeight);
+                } else { //It will be below
+                    tooltipPos = tooltipPos.add(-tooltipMouseOffset.x, tooltipMouseOffset.y).subtract(tooltipWidth, 0);
+                }
+            }
+
+            GL11.glTranslated(tooltipPos.x, tooltipPos.y, 0);
+            customTooltip.draw();
+
+            GL11.glPopMatrix();
+        }
     }
 
 }

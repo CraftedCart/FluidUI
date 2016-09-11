@@ -58,7 +58,7 @@ public class UIColor {
         return new UIColor(0, 0, 0, a);
     }
 
-    public static UIColor matBlue(double a) { //Short for Material Blue
+    public static UIColor matBlue(double a) {
         return new UIColor(33, 150, 243, a);
     }
 
@@ -66,7 +66,7 @@ public class UIColor {
         return matBlue(1);
     }
 
-    public static UIColor matBlue700(double a) { //Short for Material Blue
+    public static UIColor matBlue700(double a) {
         return new UIColor(25, 118, 210, a);
     }
 
@@ -88,6 +88,30 @@ public class UIColor {
 
     public static UIColor matGrey300() {
         return matGrey300(1);
+    }
+
+    public static UIColor matGrey400(double a) {
+        return new UIColor(189, 189, 189, a);
+    }
+
+    public static UIColor matGrey400() {
+        return matGrey400(1);
+    }
+
+    public static UIColor matGrey(double a) {
+        return new UIColor(158, 158, 158, a);
+    }
+
+    public static UIColor matGrey() {
+        return matGrey(1);
+    }
+
+    public static UIColor matGrey800(double a) {
+        return new UIColor(66, 66, 66, a);
+    }
+
+    public static UIColor matGrey800() {
+        return matGrey800(1);
     }
 
     public static UIColor matGrey900(double a) {
@@ -130,7 +154,15 @@ public class UIColor {
         return matRed(1);
     }
 
-    public static UIColor matOrange(double a) { //Short for Material Orange
+    public static UIColor matRed900(double a) {
+        return new UIColor(183, 28, 28, a);
+    }
+
+    public static UIColor matRed900() {
+        return matRed900(1);
+    }
+
+    public static UIColor matOrange(double a) {
         return new UIColor(255, 152, 0, a);
     }
 
@@ -138,7 +170,7 @@ public class UIColor {
         return matOrange(1);
     }
 
-    public static UIColor matGreen(double a) { //Short for Material Green
+    public static UIColor matGreen(double a) {
         return new UIColor(76, 175, 80, a);
     }
 
@@ -146,12 +178,68 @@ public class UIColor {
         return matGreen(1);
     }
 
-    public static UIColor matYellow(double a) { //Short for Material Green
+    public static UIColor matLightGreen(double a) {
+        return new UIColor(139, 195, 74, a);
+    }
+
+    public static UIColor matLightGreen() {
+        return matLightGreen(1);
+    }
+
+    public static UIColor matYellow(double a) {
         return new UIColor(255, 235, 1, a);
     }
 
     public static UIColor matYellow() {
         return matYellow(1);
+    }
+
+    public static UIColor matIndigo(double a) {
+        return new UIColor(63, 81, 181, a);
+    }
+
+    public static UIColor matIndigo() {
+        return matIndigo(1);
+    }
+
+    public static UIColor matTeal(double a) {
+        return new UIColor(0, 150, 136, a);
+    }
+
+    public static UIColor matTeal() {
+        return matTeal(1);
+    }
+
+    public static UIColor matPurple300(double a) {
+        return new UIColor(186, 104, 200, a);
+    }
+
+    public static UIColor matPurple300() {
+        return matPurple300(1);
+    }
+
+    public static UIColor matPurple(double a) {
+        return new UIColor(156, 39, 176, a);
+    }
+
+    public static UIColor matPurple() {
+        return matPurple(1);
+    }
+
+    public static UIColor matPurple700(double a) {
+        return new UIColor(123, 31, 162, a);
+    }
+
+    public static UIColor matPurple700() {
+        return matPurple700(1);
+    }
+
+    public static UIColor matCyan(double a) {
+        return new UIColor(0, 188, 212, a);
+    }
+
+    public static UIColor matCyan() {
+        return matCyan(1);
     }
 
 }
