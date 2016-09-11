@@ -11,6 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -85,7 +86,9 @@ public class ListBox extends Panel {
             plugin.onPostDraw();
         }
 
-        for (Map.Entry<String, Component> entry : childComponents.entrySet()) { //Draw children
+        Map<String, Component> childComponentsClone = new HashMap<>(childComponents);
+
+        for (Map.Entry<String, Component> entry : childComponentsClone.entrySet()) { //Draw children
             Component childComponent = entry.getValue();
             childComponent.preDraw();
             if (childComponent.isVisible() &&
