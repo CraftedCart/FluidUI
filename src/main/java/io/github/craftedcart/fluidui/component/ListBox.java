@@ -215,4 +215,10 @@ public class ListBox extends Panel {
         heightOfAllChildren = 0;
     }
 
+    public void removeChildComponent(String name) {
+        childComponents.remove(name);
+        childComponentOrder.remove(name);
+        reorganizeChildComponents();
+    }
+
 }
