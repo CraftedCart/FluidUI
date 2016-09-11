@@ -74,6 +74,14 @@ public class UIColor {
         return matBlue700(1);
     }
 
+    public static UIColor matBlue900(double a) {
+        return new UIColor(13, 71, 161, a);
+    }
+
+    public static UIColor matBlue900() {
+        return matBlue900(1);
+    }
+
     public static UIColor matWhite(double a) {
         return new UIColor(250, 250, 250, a);
     }
