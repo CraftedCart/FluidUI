@@ -16,10 +16,7 @@ import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.UnicodeFont;
 
 import java.nio.FloatBuffer;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * @author CraftedCart
@@ -142,7 +139,9 @@ public class Component {
             plugin.onPostDraw();
         }
 
-        for (Map.Entry<String, Component> entry : childComponents.entrySet()) {
+        Map<String, Component> childComponentsClone = new HashMap<>(childComponents);
+
+        for (Map.Entry<String, Component> entry : childComponentsClone.entrySet()) {
             Component childComponent = entry.getValue();
             if (childComponent.isVisible()) {
                 childComponent.draw();
@@ -301,8 +300,10 @@ public class Component {
     public void onClick(int button, PosXY mousePos) {
         onClickAnywhere(button, mousePos);
 
+        Map<String, Component> childComponentsClone = new HashMap<>(childComponents);
+
         boolean hitChildComponent = false;
-        for (Map.Entry<String, Component> entry : childComponents.entrySet()) {
+        for (Map.Entry<String, Component> entry : childComponentsClone.entrySet()) {
             Component childComponent = entry.getValue();
 
             if (childComponent.mouseOver) {
@@ -323,14 +324,18 @@ public class Component {
     }
 
     public void onClickAnywhere(int button, PosXY mousePos) {
-        for (Map.Entry<String, Component> entry : childComponents.entrySet()) {
+        Map<String, Component> childComponentsClone = new HashMap<>(childComponents);
+
+        for (Map.Entry<String, Component> entry : childComponentsClone.entrySet()) {
             Component childComponent = entry.getValue();
             childComponent.onClickAnywhere(button, mousePos);
         }
     }
 
     public void onKey(int key, char keyChar) {
-        for (Map.Entry<String, Component> entry : childComponents.entrySet()) {
+        Map<String, Component> childComponentsClone = new HashMap<>(childComponents);
+
+        for (Map.Entry<String, Component> entry : childComponentsClone.entrySet()) {
             Component childComponent = entry.getValue();
             childComponent.onKey(key, keyChar);
         }
@@ -389,7 +394,9 @@ public class Component {
     public void checkDrawTooltips() {
         if (mouseOver) {
             if (!showTooltipIfMouseOverChildComponent) {
-                for (Map.Entry<String, Component> entry : childComponents.entrySet()) {
+                Map<String, Component> childComponentsClone = new HashMap<>(childComponents);
+
+                for (Map.Entry<String, Component> entry : childComponentsClone.entrySet()) {
                     if (entry.getValue().mouseOver) { //If the mouse is over a child component, return
                         return;
                     }
