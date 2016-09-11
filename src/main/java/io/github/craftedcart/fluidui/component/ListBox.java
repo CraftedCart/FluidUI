@@ -206,4 +206,10 @@ public class ListBox extends Panel {
         this.childComponentSpacing = childComponentSpacing;
     }
 
+    public void clearChildComponents() {
+        childComponents.clear();
+        childComponentOrder.clear();
+        heightOfAllChildren = 0;
+    }
+
 }
