@@ -6,6 +6,8 @@ import io.github.craftedcart.fluidui.util.MathUtils;
 import io.github.craftedcart.fluidui.util.PosXY;
 import io.github.craftedcart.fluidui.util.UIColor;
 import io.github.craftedcart.fluidui.util.UIUtils;
+import org.apache.commons.collections4.OrderedMap;
+import org.apache.commons.collections4.map.ListOrderedMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.opengl.GL11;
@@ -86,7 +88,8 @@ public class ListBox extends Panel {
             plugin.onPostDraw();
         }
 
-        Map<String, Component> childComponentsClone = new HashMap<>(childComponents);
+        OrderedMap<String, Component> childComponentsClone = new ListOrderedMap<>();
+        childComponentsClone.putAll(childComponents);
 
         for (Map.Entry<String, Component> entry : childComponentsClone.entrySet()) { //Draw children
             Component childComponent = entry.getValue();

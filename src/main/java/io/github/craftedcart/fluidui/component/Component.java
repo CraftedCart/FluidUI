@@ -7,6 +7,7 @@ import io.github.craftedcart.fluidui.util.AnchorPoint;
 import io.github.craftedcart.fluidui.util.PosXY;
 import io.github.craftedcart.fluidui.util.UIColor;
 import io.github.craftedcart.fluidui.util.UIUtils;
+import org.apache.commons.collections4.OrderedMap;
 import org.apache.commons.collections4.map.ListOrderedMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -300,7 +301,8 @@ public class Component {
     public void onClick(int button, PosXY mousePos) {
         onClickAnywhere(button, mousePos);
 
-        Map<String, Component> childComponentsClone = new HashMap<>(childComponents);
+        OrderedMap<String, Component> childComponentsClone = new ListOrderedMap<>();
+        childComponentsClone.putAll(childComponents);
 
         boolean hitChildComponent = false;
         for (Map.Entry<String, Component> entry : childComponentsClone.entrySet()) {
@@ -324,7 +326,8 @@ public class Component {
     }
 
     public void onClickAnywhere(int button, PosXY mousePos) {
-        Map<String, Component> childComponentsClone = new HashMap<>(childComponents);
+        OrderedMap<String, Component> childComponentsClone = new ListOrderedMap<>();
+        childComponentsClone.putAll(childComponents);
 
         for (Map.Entry<String, Component> entry : childComponentsClone.entrySet()) {
             Component childComponent = entry.getValue();
@@ -333,7 +336,8 @@ public class Component {
     }
 
     public void onKey(int key, char keyChar) {
-        Map<String, Component> childComponentsClone = new HashMap<>(childComponents);
+        OrderedMap<String, Component> childComponentsClone = new ListOrderedMap<>();
+        childComponentsClone.putAll(childComponents);
 
         for (Map.Entry<String, Component> entry : childComponentsClone.entrySet()) {
             Component childComponent = entry.getValue();
@@ -394,7 +398,8 @@ public class Component {
     public void checkDrawTooltips() {
         if (mouseOver) {
             if (!showTooltipIfMouseOverChildComponent) {
-                Map<String, Component> childComponentsClone = new HashMap<>(childComponents);
+                OrderedMap<String, Component> childComponentsClone = new ListOrderedMap<>();
+                childComponentsClone.putAll(childComponents);
 
                 for (Map.Entry<String, Component> entry : childComponentsClone.entrySet()) {
                     if (entry.getValue().mouseOver) { //If the mouse is over a child component, return
