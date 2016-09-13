@@ -76,7 +76,7 @@ public class TextField extends Label {
         //</editor-fold>
 
         //<editor-fold desc="Draw the text">
-        if (font != null && !text.isEmpty()) {
+        if (font != null && text != null && !text.isEmpty()) {
             switch (horizontalAlign) { //Get the x position of the text
                 case left:
                     textPos.x = 4;
