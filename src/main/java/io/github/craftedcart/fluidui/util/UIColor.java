@@ -186,6 +186,14 @@ public class UIColor {
         return matGreen(1);
     }
 
+    public static UIColor matGreen900(double a) {
+        return new UIColor(27, 94, 32, a);
+    }
+
+    public static UIColor matGreen900() {
+        return matGreen900(1);
+    }
+
     public static UIColor matLightGreen(double a) {
         return new UIColor(139, 195, 74, a);
     }
