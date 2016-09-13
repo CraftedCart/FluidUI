@@ -37,6 +37,7 @@ public class TextField extends Label {
     @Nullable public UIAction onReturnAction;
     @Nullable public UIAction onValueChangedAction;
     @Nullable public UIAction onValueConfirmedAction;
+    @Nullable public UIAction onSelectedAction;
 
     public boolean isEnabled = true;
 
@@ -228,6 +229,10 @@ public class TextField extends Label {
         this.onValueConfirmedAction = onValueConfirmedAction;
     }
 
+    public void setOnSelectedAction(@Nullable UIAction onSelectedAction) {
+        this.onSelectedAction = onSelectedAction;
+    }
+
     public void setEnabled(boolean enabled) {
         isEnabled = enabled;
 
@@ -241,6 +246,10 @@ public class TextField extends Label {
             onValueConfirmedAction.execute();
         } else if (selected && isEnabled) {
             prevValue = value;
+        }
+
+        if (isEnabled && !isSelected && selected && onSelectedAction != null) {
+            onSelectedAction.execute();
         }
 
         isSelected = isEnabled && selected;
