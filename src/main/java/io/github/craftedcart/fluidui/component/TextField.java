@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.input.Keyboard;
 
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 /**
@@ -18,12 +19,14 @@ import java.util.regex.Pattern;
 public class TextField extends Label {
 
     @SuppressWarnings("NullableProblems") @NotNull public UIColor backgroundColor;
+    @SuppressWarnings("NullableProblems") @NotNull public UIColor backgroundDisabledColor;
     @SuppressWarnings("NullableProblems") @NotNull public UIColor valueColor;
     @SuppressWarnings("NullableProblems") @NotNull public UIColor placeholderColor;
     @SuppressWarnings("NullableProblems") @NotNull public UIColor cursorColor;
     private boolean cursorFadingOut = true;
 
     @NotNull public String value = "";
+    @NotNull public String prevValue = "";
     @Nullable public String placeholder;
     @Nullable public String inputRegexCheck;
 
@@ -33,6 +36,9 @@ public class TextField extends Label {
     @Nullable public UIAction onTabAction;
     @Nullable public UIAction onReturnAction;
     @Nullable public UIAction onValueChangedAction;
+    @Nullable public UIAction onValueConfirmedAction;
+
+    public boolean isEnabled = true;
 
     public TextField() {
         if (parentComponent != null) {
@@ -54,6 +60,7 @@ public class TextField extends Label {
         super.setTheme(theme);
 
         backgroundColor = theme.textFieldBackgroundColor;
+        backgroundDisabledColor = theme.textFieldBackgroundDisabledColor;
         valueColor = theme.textFieldValueColor;
         placeholderColor = theme.textFieldPlaceholderColor;
         cursorColor = theme.textFieldCursorColor;
@@ -61,7 +68,11 @@ public class TextField extends Label {
 
     @Override
     public void componentDraw() {
-        UIUtils.drawQuad(topLeftPx, bottomRightPx, backgroundColor);
+        if (isEnabled) {
+            UIUtils.drawQuad(topLeftPx, bottomRightPx, backgroundColor);
+        } else {
+            UIUtils.drawQuad(topLeftPx, bottomRightPx, backgroundDisabledColor);
+        }
 
         //<editor-fold desc="Set the text to the value or the placeholder">
         if (!value.isEmpty()) {
@@ -116,6 +127,7 @@ public class TextField extends Label {
             }
         }
 
+        //<editor-fold desc="Draw the cursor">
         if (isSelected && font != null && text != null) {
             double cursorX = font.getWidth(text.substring(0, cursorPos));
 
@@ -124,6 +136,7 @@ public class TextField extends Label {
                     new PosXY(cursorX + topLeftPx.x + 6, bottomRightPx.y - 2),
                     cursorColor);
         }
+        //</editor-fold>
     }
 
     public void setBackgroundColor(@NotNull UIColor backgroundColor) {
@@ -205,10 +218,28 @@ public class TextField extends Label {
         this.onValueChangedAction = onValueChangedAction;
     }
 
-    public void setSelected(boolean selected) {
-        isSelected = selected;
+    public void setOnValueConfirmedAction(@Nullable UIAction onValueConfirmedAction) {
+        this.onValueConfirmedAction = onValueConfirmedAction;
+    }
 
-        if (selected) {
+    public void setEnabled(boolean enabled) {
+        isEnabled = enabled;
+
+        if (!enabled) {
+            isSelected = false;
+        }
+    }
+
+    public void setSelected(boolean selected) {
+        if (isSelected && !selected && onValueConfirmedAction != null && !Objects.equals(prevValue, value) && isEnabled) {
+            onValueConfirmedAction.execute();
+        } else if (selected && isEnabled) {
+            prevValue = value;
+        }
+
+        isSelected = isEnabled && selected;
+
+        if (isSelected) {
             Keyboard.enableRepeatEvents(true); //Enable key repeats
         } else {
             Keyboard.enableRepeatEvents(false); //Disable key repeats

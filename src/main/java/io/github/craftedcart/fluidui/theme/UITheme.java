@@ -44,6 +44,7 @@ public class UITheme {
 
     //TextField
     @NotNull public UIColor textFieldBackgroundColor = UIColor.matGrey900();
+    @NotNull public UIColor textFieldBackgroundDisabledColor = UIColor.matGrey();
     @NotNull public UIColor textFieldValueColor = UIColor.matWhite();
     @NotNull public UIColor textFieldPlaceholderColor = UIColor.matWhite(0.5);
     @NotNull public UIColor textFieldCursorColor = UIColor.matBlue();
