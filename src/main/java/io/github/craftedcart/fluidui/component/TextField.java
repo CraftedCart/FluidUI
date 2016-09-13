@@ -129,6 +129,12 @@ public class TextField extends Label {
 
         //<editor-fold desc="Draw the cursor">
         if (isSelected && font != null && text != null) {
+            if (cursorPos > text.length()) {
+                cursorPos = text.length();
+            } else if (cursorPos < 0) {
+                cursorPos = 0;
+            }
+
             double cursorX = font.getWidth(text.substring(0, cursorPos));
 
             UIUtils.drawQuad(
