@@ -38,6 +38,7 @@ public class TextField extends Label {
     @Nullable public UIAction onValueChangedAction;
     @Nullable public UIAction onValueConfirmedAction;
     @Nullable public UIAction onSelectedAction;
+    @Nullable public UIAction onNextFrameAction;
 
     public boolean isEnabled = true;
 
@@ -65,6 +66,16 @@ public class TextField extends Label {
         valueColor = theme.textFieldValueColor;
         placeholderColor = theme.textFieldPlaceholderColor;
         cursorColor = theme.textFieldCursorColor;
+    }
+
+    @Override
+    public void preDraw() {
+        if (onNextFrameAction != null) { //If an onReturnAction is set
+            onNextFrameAction.execute(); //Execute it
+            onNextFrameAction = null;
+        }
+
+        super.preDraw();
     }
 
     @Override
@@ -192,13 +203,9 @@ public class TextField extends Label {
                     }
                 }
             } else if (key == Keyboard.KEY_TAB) {
-                if (onTabAction != null) { //If an onTabAction is set
-                    onTabAction.execute(); //Execute it
-                }
+                onNextFrameAction = onTabAction;
             } else if (key == Keyboard.KEY_RETURN) {
-                if (onReturnAction != null) { //If an onReturnAction is set
-                    onReturnAction.execute(); //Execute it
-                }
+                onNextFrameAction = onReturnAction;
             } else if (Pattern.matches("[A-Za-z0-9\\s_\\+\\-\\.,!@#\\$%\\^&\\*\\(\\);\\\\/\\|<>\"'\\[\\]\\?=:]", String.valueOf(keyChar))) {
                 //A normal character was entered
                 if (inputRegexCheck == null || Pattern.matches(inputRegexCheck, String.valueOf(keyChar))) {

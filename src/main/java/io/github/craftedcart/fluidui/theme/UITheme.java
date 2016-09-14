@@ -25,6 +25,7 @@ public class UITheme {
     @NotNull public UIColor buttonBackgroundIdleColor = UIColor.matBlue();
     @NotNull public UIColor buttonBackgroundActiveColor = UIColor.matBlueGrey();
     @NotNull public UIColor buttonBackgroundHitColor = UIColor.matBlueGrey700();
+    @NotNull public UIColor buttonBackgroundDisabledColor = UIColor.matGrey();
 
     //TextButton
     @NotNull public UIColor buttonTextColor = UIColor.matWhite();

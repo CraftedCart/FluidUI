@@ -22,9 +22,12 @@ public class TextButton extends Label {
     @SuppressWarnings("NullableProblems") @NotNull public UIColor backgroundIdleColor;
     @SuppressWarnings("NullableProblems") @NotNull public UIColor backgroundActiveColor;
     @SuppressWarnings("NullableProblems") @NotNull public UIColor backgroundHitColor;
+    @SuppressWarnings("NullableProblems") @NotNull public UIColor backgroundDisabledColor;
 
     @Nullable public Texture texture;
     @Nullable public Slice9PosXY textureSlice9;
+
+    public boolean isEnabled = true;
 
     public TextButton() {
         init();
@@ -55,6 +58,7 @@ public class TextButton extends Label {
         backgroundIdleColor = theme.buttonBackgroundIdleColor;
         backgroundActiveColor = theme.buttonBackgroundActiveColor;
         backgroundHitColor = theme.buttonBackgroundHitColor;
+        backgroundDisabledColor = theme.buttonBackgroundDisabledColor;
         textColor = theme.buttonTextColor;
         horizontalAlign = theme.buttonTextHAlign;
         verticalAlign = theme.buttonTextVAlign;
@@ -68,12 +72,14 @@ public class TextButton extends Label {
 
     public void componentDraw() {
         UIColor buttonBackgroundColor; //The background color of the button
-        if (mouseOver) { //If the mouse is over the button
+        if (mouseOver && isEnabled) { //If the mouse is over the button
             if (Mouse.isButtonDown(0)) { //If LMB down
                 buttonBackgroundColor = backgroundHitColor;
             } else { //LMB not down
                 buttonBackgroundColor = backgroundActiveColor;
             }
+        } else if (!isEnabled) {
+            buttonBackgroundColor = backgroundDisabledColor;
         } else { //Mouse not over
             buttonBackgroundColor = backgroundIdleColor;
         }
@@ -120,7 +126,7 @@ public class TextButton extends Label {
             plugin.onClick(button, mousePos);
         }
 
-        if (onLMBAction != null) {
+        if (onLMBAction != null && isEnabled) {
             onLMBAction.execute();
         }
     }
@@ -131,6 +137,10 @@ public class TextButton extends Label {
 
     public void setTextureSlice9(@Nullable Slice9PosXY textureSlice9) {
         this.textureSlice9 = textureSlice9;
+    }
+
+    public void setEnabled(boolean enabled) {
+        isEnabled = enabled;
     }
 
 }
