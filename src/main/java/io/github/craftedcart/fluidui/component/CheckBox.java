@@ -43,6 +43,7 @@ public class CheckBox extends Button {
 
     public void setValue(boolean value) {
         this.value = value;
+        updateColor();
     }
 
     public boolean getValue() {
