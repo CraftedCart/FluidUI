@@ -35,7 +35,7 @@ public class UIColor {
     }
 
     public UIColor alpha(double a) {
-        return new UIColor(r, g, b, a);
+        return new UIColor(r * 255, g * 255, b * 255, a);
     }
 
     public static UIColor transparent() {
