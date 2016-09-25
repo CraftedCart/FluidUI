@@ -57,6 +57,10 @@ public class UITheme {
     public double handleThickness = 4;
     public double sliderHandleHeight = 24;
 
+    //Progress Bar
+    @NotNull public UIColor progressBarBackgroundColor = UIColor.matGrey900();
+    @NotNull public UIColor progressBarForegroundColor = UIColor.matBlue();
+
     //Tooltips
     @Nullable public UnicodeFont tooltipFont;
     @NotNull public UIColor tooltipColor = UIColor.matGrey900(0.5);
