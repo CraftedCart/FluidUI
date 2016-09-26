@@ -3,8 +3,6 @@ package io.github.craftedcart.fluidui.component;
 import io.github.craftedcart.fluidui.util.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.opengl.Texture;
 
 /**

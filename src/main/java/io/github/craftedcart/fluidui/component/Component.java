@@ -17,7 +17,10 @@ import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.UnicodeFont;
 
 import java.nio.FloatBuffer;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author CraftedCart
