@@ -173,8 +173,10 @@ public class TextField extends Label {
     public void onClick(int button, PosXY mousePos) {
         super.onClick(button, mousePos);
 
-        if (button == 0) { //If LMB
-            setSelected(true);
+        if (enableClicking) {
+            if (button == 0) { //If LMB
+                setSelected(true);
+            }
         }
     }
 

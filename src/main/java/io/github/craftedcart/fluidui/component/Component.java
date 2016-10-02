@@ -71,6 +71,7 @@ public class Component {
 
     @Nullable public PosXY mousePos;
     public boolean mouseOver = false;
+    public boolean enableClicking = true;
 
     @Nullable public UIAction onInitAction;
     @Nullable public UIAction onLMBAction;
@@ -304,26 +305,28 @@ public class Component {
     public void onClick(int button, PosXY mousePos) {
         onClickAnywhere(button, mousePos);
 
-        OrderedMap<String, Component> childComponentsClone = new ListOrderedMap<>();
-        childComponentsClone.putAll(childComponents);
+        if (enableClicking) {
+            OrderedMap<String, Component> childComponentsClone = new ListOrderedMap<>();
+            childComponentsClone.putAll(childComponents);
 
-        boolean hitChildComponent = false;
-        for (Map.Entry<String, Component> entry : childComponentsClone.entrySet()) {
-            Component childComponent = entry.getValue();
+            boolean hitChildComponent = false;
+            for (Map.Entry<String, Component> entry : childComponentsClone.entrySet()) {
+                Component childComponent = entry.getValue();
 
-            if (childComponent.mouseOver) {
-                hitChildComponent = true;
-                childComponent.onClick(button, mousePos);
-            }
-        }
-
-        if (!hitChildComponent) {
-            for (AbstractComponentPlugin plugin : plugins) {
-                plugin.onClick(button, mousePos);
+                if (childComponent.mouseOver) {
+                    hitChildComponent = true;
+                    childComponent.onClick(button, mousePos);
+                }
             }
 
-            if (onLMBAction != null) {
-                onLMBAction.execute();
+            if (!hitChildComponent) {
+                for (AbstractComponentPlugin plugin : plugins) {
+                    plugin.onClick(button, mousePos);
+                }
+
+                if (onLMBAction != null) {
+                    onLMBAction.execute();
+                }
             }
         }
     }
@@ -475,4 +478,7 @@ public class Component {
         }
     }
 
+    public void setEnableClicking(boolean enableClicking) {
+        this.enableClicking = enableClicking;
+    }
 }

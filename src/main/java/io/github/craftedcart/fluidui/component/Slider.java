@@ -131,16 +131,18 @@ public class Slider extends Component {
     public void onClick(int button, PosXY mousePos) {
         super.onClick(button, mousePos);
 
-        isGrabbed = true;
+        if (enableClicking) {
+            isGrabbed = true;
 
-        double percentage = (mousePos.x - topLeftPx.x - handleThickness / 2) / (bottomRightPx.x - topLeftPx.x - handleThickness);
-        double newValue = (maxValue - minValue) * percentage + minValue;
+            double percentage = (mousePos.x - topLeftPx.x - handleThickness / 2) / (bottomRightPx.x - topLeftPx.x - handleThickness);
+            double newValue = (maxValue - minValue) * percentage + minValue;
 
-        if (newValue != value) {
-            value = MathUtils.clamp(newValue, minValue, maxValue);
+            if (newValue != value) {
+                value = MathUtils.clamp(newValue, minValue, maxValue);
 
-            if (onValueChangedAction != null) {
-                onValueChangedAction.execute(value);
+                if (onValueChangedAction != null) {
+                    onValueChangedAction.execute(value);
+                }
             }
         }
     }

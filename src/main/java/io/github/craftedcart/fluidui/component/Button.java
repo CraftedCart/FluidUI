@@ -101,20 +101,22 @@ public class Button extends Component {
     public void onClick(int button, PosXY mousePos) {
         onClickAnywhere(button, mousePos);
 
-        for (Map.Entry<String, Component> entry : childComponents.entrySet()) {
-            Component childComponent = entry.getValue();
+        if (enableClicking) {
+            for (Map.Entry<String, Component> entry : childComponents.entrySet()) {
+                Component childComponent = entry.getValue();
 
-            if (childComponent.mouseOver) {
-                childComponent.onClick(button, mousePos);
+                if (childComponent.mouseOver) {
+                    childComponent.onClick(button, mousePos);
+                }
             }
-        }
 
-        for (AbstractComponentPlugin plugin : plugins) {
-            plugin.onClick(button, mousePos);
-        }
+            for (AbstractComponentPlugin plugin : plugins) {
+                plugin.onClick(button, mousePos);
+            }
 
-        if (onLMBAction != null) {
-            onLMBAction.execute();
+            if (onLMBAction != null) {
+                onLMBAction.execute();
+            }
         }
     }
 
