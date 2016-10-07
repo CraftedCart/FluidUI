@@ -1,6 +1,7 @@
 package io.github.craftedcart.fluidui.component;
 
 import io.github.craftedcart.fluidui.theme.UITheme;
+import io.github.craftedcart.fluidui.uiaction.UIAction;
 import io.github.craftedcart.fluidui.util.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -17,6 +18,9 @@ public class Label extends Component {
     @SuppressWarnings("NullableProblems") @NotNull public UIColor textColor;
     @SuppressWarnings("NullableProblems") @NotNull public EnumHAlignment horizontalAlign;
     @SuppressWarnings("NullableProblems") @NotNull public EnumVAlignment verticalAlign;
+    public boolean softWrap = false;
+    public int wrapLines = 1;
+    public UIAction onWrappingChangedAction;
     /**
      * Don't set this! This is updated every frame (As long as a font is set).
      */
@@ -61,6 +65,35 @@ public class Label extends Component {
 
     public void componentDraw() {
         if (font != null && text != null) {
+
+            String displayText = text;
+
+            if (softWrap) {
+
+                int wrapLines = 1; //The number of lines it takes to display the text
+                int subStrOffset = 0;
+                int i = 0;
+                while (i < displayText.length()) {
+                    int length = font.getWidth(displayText.substring(subStrOffset, i));
+
+                    if (length > width) {
+                        displayText = new StringBuilder(displayText).insert(i - 1, '\n').toString();
+                        wrapLines++;
+                        subStrOffset = i;
+                    }
+
+                    i++;
+                }
+
+                if (this.wrapLines != wrapLines) {
+                    this.wrapLines = wrapLines;
+                    if (onWrappingChangedAction != null) {
+                        onWrappingChangedAction.execute();
+                    }
+                }
+
+            }
+
             switch (horizontalAlign) { //Get the x position of the text
                 case left:
                     textPos.x = 0;
@@ -84,7 +117,7 @@ public class Label extends Component {
                     textPos.y = height - font.getLineHeight();
             }
 
-            UIUtils.drawString(font, textPos.add(topLeftPx), text, textColor);
+            UIUtils.drawString(font, textPos.add(topLeftPx), displayText, textColor);
         }
     }
 
@@ -106,6 +139,14 @@ public class Label extends Component {
 
     public void setVerticalAlign(@NotNull EnumVAlignment verticalAlign) {
         this.verticalAlign = verticalAlign;
+    }
+
+    public void setSoftWrap(boolean softWrap) {
+        this.softWrap = softWrap;
+    }
+
+    public void setOnWrappingChangedAction(UIAction onWrappingChangedAction) {
+        this.onWrappingChangedAction = onWrappingChangedAction;
     }
 
 }
