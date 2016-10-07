@@ -12,6 +12,7 @@ import org.apache.commons.collections4.map.ListOrderedMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.BufferUtils;
+import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.UnicodeFont;
@@ -279,13 +280,21 @@ public class Component {
     }
 
     protected boolean checkMouseOver() {
-        FloatBuffer mat = BufferUtils.createFloatBuffer(16);
-        GL11.glGetFloat(GL11.GL_MODELVIEW_MATRIX, mat);
+        try {
+            if (Display.isCurrent()) {
+                FloatBuffer mat = BufferUtils.createFloatBuffer(16);
+                GL11.glGetFloat(GL11.GL_MODELVIEW_MATRIX, mat);
 
-        return mousePos != null && topLeftPos != null && bottomRightPos != null &&
-                mousePos.x > topLeftPx.x + mat.get(12) && mousePos.y > topLeftPx.y + mat.get(13) &&
-                mousePos.x <= bottomRightPx.x + mat.get(12) && mousePos.y <= bottomRightPx.y + mat.get(13) &&
-                (parentComponent == null || parentComponent.mouseOver);
+                return mousePos != null && topLeftPos != null && bottomRightPos != null &&
+                        mousePos.x > topLeftPx.x + mat.get(12) && mousePos.y > topLeftPx.y + mat.get(13) &&
+                        mousePos.x <= bottomRightPx.x + mat.get(12) && mousePos.y <= bottomRightPx.y + mat.get(13) &&
+                        (parentComponent == null || parentComponent.mouseOver);
+            } else {
+                return false;
+            }
+        } catch (LWJGLException e) {
+            return false;
+        }
     }
 
     /**
