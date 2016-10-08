@@ -281,7 +281,7 @@ public class Component {
 
     protected boolean checkMouseOver() {
         try {
-            if (Display.isCurrent()) {
+            if (Display.isCreated() && Display.isCurrent()) {
                 FloatBuffer mat = BufferUtils.createFloatBuffer(16);
                 GL11.glGetFloat(GL11.GL_MODELVIEW_MATRIX, mat);
 
