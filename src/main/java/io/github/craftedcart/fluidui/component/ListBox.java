@@ -28,11 +28,14 @@ public class ListBox extends Panel {
     public double smoothedScrollOffset = 0;
     public double heightOfAllChildren = 0;
 
+    public double prevScrollbarThickness;
     public double scrollbarThickness;
     public UIColor scrollbarBG;
     public UIColor scrollbarFG;
     public double mouseSensitivity;
     public double scrollSmoothing;
+
+    public boolean canScroll = true;
 
     public ListBox() {
         init();
@@ -67,7 +70,9 @@ public class ListBox extends Panel {
     }
 
     public void draw() {
-        detectScroll();
+        if (canScroll) {
+            detectScroll();
+        }
 
         preDraw();
         componentDraw();
@@ -105,11 +110,13 @@ public class ListBox extends Panel {
         GL11.glPopMatrix();
 
         //Scroll bar
-        UIUtils.drawQuad(new PosXY(bottomRightPx.x - scrollbarThickness, topLeftPx.y), bottomRightPx, scrollbarBG);
-        double scrollPercent = smoothedScrollOffset / (heightOfAllChildren - height);
-        double scrollbarHeight = Math.min(Math.max(24, height / heightOfAllChildren * height), height);
-        UIUtils.drawQuad(new PosXY(bottomRightPx.x - scrollbarThickness, topLeftPx.y - (height - scrollbarHeight) * scrollPercent),
-                new PosXY(bottomRightPx.x, topLeftPx.y - (height - scrollbarHeight) * scrollPercent + scrollbarHeight), scrollbarFG);
+        if (canScroll) {
+            UIUtils.drawQuad(new PosXY(bottomRightPx.x - scrollbarThickness, topLeftPx.y), bottomRightPx, scrollbarBG);
+            double scrollPercent = smoothedScrollOffset / (heightOfAllChildren - height);
+            double scrollbarHeight = Math.min(Math.max(24, height / heightOfAllChildren * height), height);
+            UIUtils.drawQuad(new PosXY(bottomRightPx.x - scrollbarThickness, topLeftPx.y - (height - scrollbarHeight) * scrollPercent),
+                    new PosXY(bottomRightPx.x, topLeftPx.y - (height - scrollbarHeight) * scrollPercent + scrollbarHeight), scrollbarFG);
+        }
     }
 
     private void detectScroll() {
@@ -128,6 +135,18 @@ public class ListBox extends Panel {
 
     public void setBackgroundColor(@NotNull UIColor backgroundColor) {
         this.backgroundColor = backgroundColor;
+    }
+
+    public void setCanScroll(boolean canScroll) {
+        this.canScroll = canScroll;
+        if (!canScroll) {
+            prevScrollbarThickness = scrollbarThickness;
+            scrollbarThickness = 0;
+        } else {
+            scrollbarThickness = prevScrollbarThickness;
+        }
+
+        reorganizeChildComponents();
     }
 
     public double getSizeOfChildren(int maxComponentIndex) {
