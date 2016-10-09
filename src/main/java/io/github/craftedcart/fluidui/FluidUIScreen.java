@@ -4,6 +4,7 @@ import io.github.craftedcart.fluidui.component.Component;
 import io.github.craftedcart.fluidui.util.PosXY;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.BufferUtils;
+import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
@@ -46,12 +47,20 @@ public abstract class FluidUIScreen extends Component implements IUIScreen {
 
     @Override
     protected boolean checkMouseOver() {
-        FloatBuffer mat = BufferUtils.createFloatBuffer(16);
-        GL11.glGetFloat(GL11.GL_MODELVIEW_MATRIX, mat);
+        try {
+            if (Display.isCreated() && Display.isCurrent()) {
+                FloatBuffer mat = BufferUtils.createFloatBuffer(16);
+                GL11.glGetFloat(GL11.GL_MODELVIEW_MATRIX, mat);
 
-        return mousePos != null && topLeftPos != null && bottomRightPos != null &&
-                mousePos.x > topLeftPx.x + mat.get(12) && mousePos.y > topLeftPx.y + mat.get(13) &&
-                mousePos.x <= bottomRightPx.x + mat.get(12) && mousePos.y <= bottomRightPx.y + mat.get(13);
+                return mousePos != null && topLeftPos != null && bottomRightPos != null &&
+                        mousePos.x > topLeftPx.x + mat.get(12) && mousePos.y > topLeftPx.y + mat.get(13) &&
+                        mousePos.x <= bottomRightPx.x + mat.get(12) && mousePos.y <= bottomRightPx.y + mat.get(13);
+            } else {
+                return false;
+            }
+        } catch (LWJGLException e) {
+            return false;
+        }
     }
 
     /**
