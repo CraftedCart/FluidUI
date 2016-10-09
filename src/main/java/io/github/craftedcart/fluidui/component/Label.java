@@ -15,6 +15,8 @@ public class Label extends Component {
 
     @Nullable public UnicodeFont font;
     @Nullable public String text;
+    @Nullable private String displayText;
+    @Nullable private Double prevWidth;
     @SuppressWarnings("NullableProblems") @NotNull public UIColor textColor;
     @SuppressWarnings("NullableProblems") @NotNull public EnumHAlignment horizontalAlign;
     @SuppressWarnings("NullableProblems") @NotNull public EnumVAlignment verticalAlign;
@@ -66,9 +68,8 @@ public class Label extends Component {
     public void componentDraw() {
         if (font != null && text != null) {
 
-            String displayText = text;
-
-            if (softWrap) {
+            if (softWrap && (prevWidth == null || prevWidth != width)) {
+                displayText = text;
 
                 int wrapLines = 1; //The number of lines it takes to display the text
                 int subStrOffset = 0;
@@ -92,6 +93,10 @@ public class Label extends Component {
                     }
                 }
 
+                prevWidth = width;
+
+            } else if (!softWrap) {
+                displayText = text;
             }
 
             switch (horizontalAlign) { //Get the x position of the text
