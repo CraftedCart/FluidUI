@@ -7,6 +7,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.newdawn.slick.UnicodeFont;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author CraftedCart
  * Created on 03/03/2016 (DD/MM/YYYY)
@@ -69,34 +72,52 @@ public class Label extends Component {
         if (font != null && text != null) {
 
             if (softWrap && (prevWidth == null || prevWidth != width)) {
-                displayText = text;
+                String[] lines = text.split("\\r?\\n");
+                List<String> wrappedLines = new ArrayList<>();
 
                 int wrapLines = 1; //The number of lines it takes to display the text
-                int subStrOffset = 0;
-                int i = 0;
-                while (i < displayText.length()) {
-                    int length = font.getWidth(displayText.substring(subStrOffset, i));
 
-                    if (length > width) {
-                        if (i > 0) {
-                            displayText = new StringBuilder(displayText).insert(i - 1, '\n').toString();
-                            wrapLines++;
-                            subStrOffset = i;
+                for (String line : lines) {
+                    int subStrOffset = 0;
+                    int i = 0;
+                    while (i < line.length()) {
+                        int length = font.getWidth(line.substring(subStrOffset, i));
 
-                            i++;
-                        } else {
-                            break;
+                        if (length > width) {
+                            if (i > 0) {
+                                line = new StringBuilder(line).insert(i - 1, '\n').toString();
+                                wrappedLines.add(line.substring(subStrOffset, i - 1));
+                                subStrOffset = i;
+
+                                i++;
+                            } else {
+                                break;
+                            }
                         }
+
+                        i++;
                     }
 
-                    i++;
+                    wrappedLines.add(line.substring(subStrOffset));
                 }
 
+                wrapLines = wrappedLines.size();
                 if (this.wrapLines != wrapLines) {
                     this.wrapLines = wrapLines;
                     if (onWrappingChangedAction != null) {
                         onWrappingChangedAction.execute();
                     }
+                }
+
+                //Join all lines together
+                displayText = "";
+                int i = 0;
+                for (String line : wrappedLines) {
+                    displayText = displayText + line + '\n';
+                    i++;
+                }
+                if (i > 0) {
+                    displayText = displayText.substring(0, displayText.length() - 1);
                 }
 
                 prevWidth = width;
