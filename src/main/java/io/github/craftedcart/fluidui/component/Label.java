@@ -78,9 +78,15 @@ public class Label extends Component {
                     int length = font.getWidth(displayText.substring(subStrOffset, i));
 
                     if (length > width) {
-                        displayText = new StringBuilder(displayText).insert(i - 1, '\n').toString();
-                        wrapLines++;
-                        subStrOffset = i;
+                        if (i > 0) {
+                            displayText = new StringBuilder(displayText).insert(i - 1, '\n').toString();
+                            wrapLines++;
+                            subStrOffset = i;
+
+                            i++;
+                        } else {
+                            break;
+                        }
                     }
 
                     i++;
