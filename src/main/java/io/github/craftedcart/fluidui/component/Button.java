@@ -22,9 +22,12 @@ public class Button extends Component {
     @SuppressWarnings("NullableProblems") @NotNull public UIColor backgroundIdleColor;
     @SuppressWarnings("NullableProblems") @NotNull public UIColor backgroundActiveColor;
     @SuppressWarnings("NullableProblems") @NotNull public UIColor backgroundHitColor;
+    @SuppressWarnings("NullableProblems") @NotNull public UIColor backgroundDisabledColor;
 
     @Nullable public Texture texture;
     @Nullable public Slice9PosXY textureSlice9;
+
+    public boolean isEnabled = true;
 
     public Button() {
         init();
@@ -53,6 +56,7 @@ public class Button extends Component {
         backgroundIdleColor = theme.buttonBackgroundIdleColor;
         backgroundActiveColor = theme.buttonBackgroundActiveColor;
         backgroundHitColor = theme.buttonBackgroundHitColor;
+        backgroundDisabledColor = theme.buttonBackgroundDisabledColor;
     }
 
     public void draw() {
@@ -63,7 +67,7 @@ public class Button extends Component {
 
     public void componentDraw() {
         UIColor buttonBackgroundColor; //The background color of the button
-        if (mouseOver) { //If the mouse is over the button
+        if (mouseOver && isEnabled) { //If the mouse is over the button
             if (Mouse.isButtonDown(0)) { //If LMB down
                 buttonBackgroundColor = backgroundHitColor;
             } else { //LMB not down
@@ -114,7 +118,7 @@ public class Button extends Component {
                 plugin.onClick(button, mousePos);
             }
 
-            if (onLMBAction != null) {
+            if (onLMBAction != null && isEnabled) {
                 onLMBAction.execute();
             }
         }
@@ -126,6 +130,10 @@ public class Button extends Component {
 
     public void setTextureSlice9(@Nullable Slice9PosXY textureSlice9) {
         this.textureSlice9 = textureSlice9;
+    }
+
+    public void setEnabled(boolean enabled) {
+        isEnabled = enabled;
     }
 
 }

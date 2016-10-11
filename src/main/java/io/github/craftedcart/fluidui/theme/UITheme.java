@@ -35,6 +35,7 @@ public class UITheme {
     //CheckBox
     @NotNull public UIColor checkBoxUncheckedColor = UIColor.matGrey900();
     @NotNull public UIColor checkBoxCheckedColor = UIColor.matBlue();
+    @NotNull public UIColor checkBoxDisabledColor = UIColor.matGrey();
 
     //Label
     @Nullable public UnicodeFont labelFont;

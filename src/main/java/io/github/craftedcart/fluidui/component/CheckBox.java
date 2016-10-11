@@ -13,6 +13,8 @@ public class CheckBox extends Button {
 
     @SuppressWarnings("NullableProblems") @NotNull public UIColor uncheckedColor;
     @SuppressWarnings("NullableProblems") @NotNull public UIColor checkedColor;
+    @SuppressWarnings("NullableProblems") @NotNull public UIColor disabledColor;
+
     public boolean value = false;
 
     @Override
@@ -36,11 +38,16 @@ public class CheckBox extends Button {
 
         uncheckedColor = theme.checkBoxUncheckedColor;
         checkedColor = theme.checkBoxCheckedColor;
+        disabledColor = theme.checkBoxDisabledColor;
         updateColor();
     }
 
     private void updateColor() {
-        backgroundIdleColor = value ? checkedColor : uncheckedColor;
+        if (isEnabled) {
+            backgroundIdleColor = value ? checkedColor : uncheckedColor;
+        } else {
+            backgroundIdleColor = disabledColor;
+        }
     }
 
     public void setValue(boolean value) {
@@ -58,6 +65,16 @@ public class CheckBox extends Button {
 
     public void setCheckedColor(@NotNull UIColor checkedColor) {
         this.checkedColor = checkedColor;
+    }
+
+    public void setDisabledColor(@NotNull UIColor disabledColor) {
+        this.disabledColor = disabledColor;
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+        updateColor();
     }
 
 }
