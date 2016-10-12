@@ -24,6 +24,9 @@ public class UIUtils {
     private static int mouseDX = 0;
     private static int mouseDY = 0;
 
+    private static boolean cursorFadingOut = true;
+    private static double cursorAlpha = 1;
+
     /**
      * Sets the projection to an orthographic one<br>
      * Optionally clears the color and depth buffers<br>
@@ -61,6 +64,7 @@ public class UIUtils {
         calcDelta();
         calcMouseDelta();
         calcMouseDWheel();
+        calcCursorAlpha();
     }
 
     public static void calcDelta() {
@@ -88,6 +92,24 @@ public class UIUtils {
 
     public static int getMouseDWheel() {
         return mouseDWheel;
+    }
+
+    public static void calcCursorAlpha() {
+        if (cursorFadingOut) {
+            cursorAlpha = Math.max(cursorAlpha - UIUtils.getDelta(), 0.2);
+            if (cursorAlpha <= 0.2) {
+                cursorFadingOut = false;
+            }
+        } else {
+            cursorAlpha = Math.min(cursorAlpha + UIUtils.getDelta(), 1);
+            if (cursorAlpha >= 1) {
+                cursorFadingOut = true;
+            }
+        }
+    }
+
+    public static double getCursorAlpha() {
+        return cursorAlpha;
     }
 
     public static void drawQuad(PosXY p1, PosXY p2, PosXY p3, PosXY p4, UIColor col) {

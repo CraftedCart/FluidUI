@@ -23,7 +23,6 @@ public class TextField extends Label {
     @SuppressWarnings("NullableProblems") @NotNull public UIColor valueColor;
     @SuppressWarnings("NullableProblems") @NotNull public UIColor placeholderColor;
     @SuppressWarnings("NullableProblems") @NotNull public UIColor cursorColor;
-    private boolean cursorFadingOut = true;
 
     @NotNull public String value = "";
     @NotNull public String prevValue = "";
@@ -127,17 +126,7 @@ public class TextField extends Label {
         }
         //</editor-fold>
 
-        if (cursorFadingOut) {
-            cursorColor.a = Math.max(cursorColor.a - UIUtils.getDelta(), 0.2);
-            if (cursorColor.a <= 0.2) {
-                cursorFadingOut = false;
-            }
-        } else {
-            cursorColor.a = Math.min(cursorColor.a + UIUtils.getDelta(), 1);
-            if (cursorColor.a >= 1) {
-                cursorFadingOut = true;
-            }
-        }
+        cursorColor.a = UIUtils.getCursorAlpha();
 
         //<editor-fold desc="Draw the cursor">
         if (isSelected && font != null && text != null) {
