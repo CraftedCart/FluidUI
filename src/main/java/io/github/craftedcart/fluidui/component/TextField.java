@@ -152,6 +152,9 @@ public class TextField extends Label {
 
     public void setValue(@NotNull String value) {
         this.value = value;
+        if (cursorPos > value.length()) {
+            cursorPos = value.length();
+        }
     }
 
     public void setPlaceholder(@Nullable String placeholder) {
