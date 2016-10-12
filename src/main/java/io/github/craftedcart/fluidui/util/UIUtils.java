@@ -339,6 +339,14 @@ public class UIUtils {
         setupStencilEnd();
     }
 
+    public static void drawWithStencilOutside(UIAction drawStencilShape, UIAction drawScene) {
+        setupStencilMask();
+        drawStencilShape.execute();
+        setupStencilDrawOutside();
+        drawScene.execute();
+        setupStencilEnd();
+    }
+
     public static void setupStencilMask() {
         GL11.glEnable(GL11.GL_STENCIL_TEST);
         GL11.glColorMask(false, false, false, false);
@@ -357,6 +365,14 @@ public class UIUtils {
         GL11.glStencilMask(0x00);
         // draw only where stencil's value is 1
         GL11.glStencilFunc(GL11.GL_EQUAL, 1, 0xFF);
+    }
+
+    public static void setupStencilDrawOutside() {
+        GL11.glColorMask(true, true, true, true);
+        GL11.glDepthMask(true);
+        GL11.glStencilMask(0x00);
+        // draw only where stencil's value is 1
+        GL11.glStencilFunc(GL11.GL_NOTEQUAL, 1, 0xFF);
     }
 
     public static void setupStencilEnd() {

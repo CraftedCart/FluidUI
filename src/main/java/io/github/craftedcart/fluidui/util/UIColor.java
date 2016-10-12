@@ -250,6 +250,14 @@ public class UIColor {
         return matPurple700(1);
     }
 
+    public static UIColor matPurple900(double a) {
+        return new UIColor(74, 20, 140, a);
+    }
+
+    public static UIColor matPurple900() {
+        return matPurple900(1);
+    }
+
     public static UIColor matCyan(double a) {
         return new UIColor(0, 188, 212, a);
     }
