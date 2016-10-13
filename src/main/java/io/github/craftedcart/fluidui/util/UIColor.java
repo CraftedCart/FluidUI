@@ -258,6 +258,38 @@ public class UIColor {
         return matPurple900(1);
     }
 
+    public static UIColor matDeepPurple(double a) {
+        return new UIColor(103, 58, 183, a);
+    }
+
+    public static UIColor matDeepPurple() {
+        return matDeepPurple(1);
+    }
+
+    public static UIColor matDeepPurple900(double a) {
+        return new UIColor(49, 27, 146, a);
+    }
+
+    public static UIColor matDeepPurple900() {
+        return matDeepPurple900(1);
+    }
+
+    public static UIColor matPink(double a) {
+        return new UIColor(233, 30, 99, a);
+    }
+
+    public static UIColor matPink() {
+        return matPink(1);
+    }
+
+    public static UIColor matPink900(double a) {
+        return new UIColor(136, 14, 79, a);
+    }
+
+    public static UIColor matPink900() {
+        return matPink900(1);
+    }
+
     public static UIColor matCyan(double a) {
         return new UIColor(0, 188, 212, a);
     }
