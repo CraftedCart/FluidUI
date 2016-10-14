@@ -3,6 +3,7 @@ package io.github.craftedcart.fluidui.component;
 import io.github.craftedcart.fluidui.plugin.AbstractComponentPlugin;
 import io.github.craftedcart.fluidui.theme.UITheme;
 import io.github.craftedcart.fluidui.uiaction.UIAction;
+import io.github.craftedcart.fluidui.uiaction.UIAction3;
 import io.github.craftedcart.fluidui.util.AnchorPoint;
 import io.github.craftedcart.fluidui.util.PosXY;
 import io.github.craftedcart.fluidui.util.UIColor;
@@ -74,8 +75,10 @@ public class Component {
     public boolean mouseOver = false;
     public boolean enableClicking = true;
 
+    //Actions
     @Nullable public UIAction onInitAction;
     @Nullable public UIAction onLMBAction;
+    @Nullable public UIAction3<String /* oldName */, String /* newName */, Component /* component */> onChildComponentNameChangedAction;
 
     @NotNull public UITheme theme = new UITheme();
 
@@ -172,7 +175,11 @@ public class Component {
     }
 
     public void setName(@NotNull String name) {
+        String oldName = this.name;
         this.name = name;
+        if (parentComponent != null && parentComponent.onChildComponentNameChangedAction != null) {
+            parentComponent.onChildComponentNameChangedAction.execute(oldName, name, this);
+        }
     }
 
     public void setParentComponent(@Nullable Component parentComponent) {
@@ -309,6 +316,10 @@ public class Component {
      */
     public void setOnLMBAction(@Nullable UIAction onLMBAction) {
         this.onLMBAction = onLMBAction;
+    }
+
+    public void setOnChildComponentNameChangedAction(@Nullable UIAction3<String /* oldName */, String /* newName */, Component /* component */> onChildComponentNameChangedAction) {
+        this.onChildComponentNameChangedAction = onChildComponentNameChangedAction;
     }
 
     public void onClick(int button, PosXY mousePos) {

@@ -1,7 +1,7 @@
 package io.github.craftedcart.fluidui.component;
 
 import io.github.craftedcart.fluidui.theme.UITheme;
-import io.github.craftedcart.fluidui.uiaction.UIActionDouble;
+import io.github.craftedcart.fluidui.uiaction.UIAction1;
 import io.github.craftedcart.fluidui.util.MathUtils;
 import io.github.craftedcart.fluidui.util.PosXY;
 import io.github.craftedcart.fluidui.util.UIColor;
@@ -28,7 +28,7 @@ public class Slider extends Component {
 
     public boolean isGrabbed = false;
 
-    public UIActionDouble onValueChangedAction;
+    public UIAction1<Double> onValueChangedAction;
 
     public Slider() {
         init();
@@ -147,7 +147,7 @@ public class Slider extends Component {
         }
     }
 
-    public void setOnValueChangedAction(UIActionDouble onValueChangedAction) {
+    public void setOnValueChangedAction(UIAction1<Double> onValueChangedAction) {
         this.onValueChangedAction = onValueChangedAction;
     }
 

@@ -49,6 +49,8 @@ public class ListBox extends Panel {
         if (parentComponent != null) {
             setTheme(parentComponent.theme);
         }
+
+        setOnChildComponentNameChangedAction(this::onChildComponentNameChanged);
     }
 
     @Override
@@ -237,6 +239,10 @@ public class ListBox extends Panel {
         childComponents.remove(name);
         childComponentOrder.remove(name);
         reorganizeChildComponents();
+    }
+
+    private void onChildComponentNameChanged(String oldName, String newName, Component component) {
+        childComponentOrder.set(childComponentOrder.indexOf(oldName), newName);
     }
 
 }
