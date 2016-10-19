@@ -142,6 +142,12 @@ public class TextField extends Label {
                     new PosXY(cursorX + topLeftPx.x + 4, topLeftPx.y + 2),
                     new PosXY(cursorX + topLeftPx.x + 6, bottomRightPx.y - 2),
                     cursorColor);
+        } else if (text == null) {
+            double cursorX = 0;
+            UIUtils.drawQuad(
+                    new PosXY(cursorX + topLeftPx.x + 4, topLeftPx.y + 2),
+                    new PosXY(cursorX + topLeftPx.x + 6, bottomRightPx.y - 2),
+                    cursorColor);
         }
         //</editor-fold>
     }
@@ -196,10 +202,26 @@ public class TextField extends Label {
                         onValueChangedAction.execute();
                     }
                 }
+            } else if (key == Keyboard.KEY_DELETE) {
+                if (cursorPos < value.length()) { //If the cursor is not at the end
+                    if (cursorPos == value.length() - 1) {
+                        value = value.substring(0, value.length() - 1);
+                    } else {
+                        value = new StringBuilder(value).deleteCharAt(cursorPos + 1).toString();
+                    }
+
+                    if (onValueChangedAction != null) {
+                        onValueChangedAction.execute();
+                    }
+                }
             } else if (key == Keyboard.KEY_TAB) {
                 onNextFrameAction = onTabAction;
             } else if (key == Keyboard.KEY_RETURN) {
                 onNextFrameAction = onReturnAction;
+            } else if (key == Keyboard.KEY_LEFT) {
+                if (cursorPos > 0) cursorPos--;
+            } else if (key == Keyboard.KEY_RIGHT) {
+                if (cursorPos < value.length()) cursorPos++;
             } else if (Pattern.matches("[A-Za-z0-9\\s_\\+\\-\\.,!@#\\$%\\^&\\*\\(\\);\\\\/\\|<>\"'\\[\\]\\?=:]", String.valueOf(keyChar))) {
                 //A normal character was entered
                 if (inputRegexCheck == null || Pattern.matches(inputRegexCheck, String.valueOf(keyChar))) {

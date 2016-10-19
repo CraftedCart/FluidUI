@@ -97,7 +97,7 @@ public class UIUtils {
     public static void calcCursorAlpha() {
         if (cursorFadingOut) {
             cursorAlpha = Math.max(cursorAlpha - UIUtils.getDelta(), 0.2);
-            if (cursorAlpha <= 0.2) {
+            if (cursorAlpha <= 0.5) {
                 cursorFadingOut = false;
             }
         } else {
