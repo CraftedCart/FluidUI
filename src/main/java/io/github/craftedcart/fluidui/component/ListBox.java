@@ -37,6 +37,8 @@ public class ListBox extends Panel {
 
     public boolean canScroll = true;
 
+    public boolean useStencil = true;
+
     public ListBox() {
         init();
         postInit();
@@ -78,7 +80,11 @@ public class ListBox extends Panel {
 
         preDraw();
         componentDraw();
-        UIUtils.drawWithStencil(() -> UIUtils.drawQuad(topLeftPx, bottomRightPx, UIColor.pureWhite()), this::postDraw);
+        if (useStencil) {
+            UIUtils.drawWithStencil(() -> UIUtils.drawQuad(topLeftPx, bottomRightPx, UIColor.pureWhite()), this::postDraw);
+        } else {
+            postDraw();
+        }
     }
 
     public void componentDraw() {
@@ -243,6 +249,10 @@ public class ListBox extends Panel {
 
     private void onChildComponentNameChanged(String oldName, String newName, Component component) {
         childComponentOrder.set(childComponentOrder.indexOf(oldName), newName);
+    }
+
+    public void setUseStencil(boolean useStencil) {
+        this.useStencil = useStencil;
     }
 
 }
