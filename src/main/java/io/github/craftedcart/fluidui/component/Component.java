@@ -347,6 +347,10 @@ public class Component {
                 if (onLMBAction != null) {
                     onLMBAction.execute();
                 }
+            } else {
+                for (AbstractComponentPlugin plugin : plugins) {
+                    plugin.onClickChildComponent(button, mousePos);
+                }
             }
         }
     }
