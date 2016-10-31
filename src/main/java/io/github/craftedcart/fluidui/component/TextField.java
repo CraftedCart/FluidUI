@@ -173,6 +173,7 @@ public class TextField extends Label {
 
         if (enableClicking) {
             if (button == 0) { //If LMB
+                cursorPos = value.length();
                 setSelected(true);
             }
         }
