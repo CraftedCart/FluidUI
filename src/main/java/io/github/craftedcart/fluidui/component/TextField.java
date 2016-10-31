@@ -204,11 +204,7 @@ public class TextField extends Label {
                 }
             } else if (key == Keyboard.KEY_DELETE) {
                 if (cursorPos < value.length()) { //If the cursor is not at the end
-                    if (cursorPos == value.length() - 1) {
-                        value = value.substring(0, value.length() - 1);
-                    } else {
-                        value = new StringBuilder(value).deleteCharAt(cursorPos + 1).toString();
-                    }
+                    value = new StringBuilder(value).deleteCharAt(cursorPos).toString();
 
                     if (onValueChangedAction != null) {
                         onValueChangedAction.execute();
