@@ -109,7 +109,7 @@ public class Button extends Component {
             for (Map.Entry<String, Component> entry : childComponents.entrySet()) {
                 Component childComponent = entry.getValue();
 
-                if (childComponent.mouseOver) {
+                if (childComponent.mouseOver && childComponent.isVisible()) {
                     childComponent.onClick(button, mousePos);
                 }
             }

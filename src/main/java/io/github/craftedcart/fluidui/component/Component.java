@@ -333,7 +333,7 @@ public class Component {
             for (Map.Entry<String, Component> entry : childComponentsClone.entrySet()) {
                 Component childComponent = entry.getValue();
 
-                if (childComponent.mouseOver) {
+                if (childComponent.mouseOver && childComponent.isVisible()) {
                     hitChildComponent = true;
                     childComponent.onClick(button, mousePos);
                 }
