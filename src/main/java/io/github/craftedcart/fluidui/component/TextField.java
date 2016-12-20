@@ -274,11 +274,11 @@ public class TextField extends Label {
 
         isSelected = isEnabled && selected;
 
-        if (isSelected) {
-            Keyboard.enableRepeatEvents(true); //Enable key repeats
-        } else {
-            Keyboard.enableRepeatEvents(false); //Disable key repeats
-        }
+//        if (isSelected) {
+//            Keyboard.enableRepeatEvents(true); //Enable key repeats
+//        } else {
+//            Keyboard.enableRepeatEvents(false); //Disable key repeats
+//        }
     }
 
     public void setInputRegexCheck(@Nullable String inputRegexCheck) {
