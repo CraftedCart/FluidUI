@@ -125,7 +125,7 @@ public class Label extends Component {
                     textPos.x = width / 2 - font.getWidth(text) / 2;
                     break;
                 case right:
-                    textPos.x = width - font.getWidth(text) / 2;
+                    textPos.x = width - font.getWidth(text);
                     break;
             }
 
