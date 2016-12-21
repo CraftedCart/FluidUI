@@ -18,7 +18,11 @@ public interface IUIScreen {
         //No-Op
     }
 
-    default void onKey(int key, char keyChar) {
+    default void onKeyDown(int key, char keyChar) {
+        //No-Op
+    }
+
+    default void onKeyReleased(int key, char keyChar) {
         //No-Op
     }
 

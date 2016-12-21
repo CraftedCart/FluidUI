@@ -48,15 +48,6 @@ public class TextField extends Label {
     }
 
     @Override
-    public void setParentComponent(@Nullable Component parentComponent) {
-        super.setParentComponent(parentComponent);
-
-        if (parentComponent != null) {
-            setTheme(parentComponent.theme);
-        }
-    }
-
-    @Override
     public void setTheme(@NotNull UITheme theme) {
         super.setTheme(theme);
 
@@ -186,8 +177,8 @@ public class TextField extends Label {
     }
 
     @Override
-    public void onKey(int key, char keyChar) {
-        super.onKey(key, keyChar);
+    public void onKeyDown(int key, char keyChar) {
+        super.onKeyDown(key, keyChar);
 
         if (isSelected) {
             if (key == Keyboard.KEY_BACK) { //Backspace pressed

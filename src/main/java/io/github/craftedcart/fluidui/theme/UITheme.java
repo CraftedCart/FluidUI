@@ -75,4 +75,7 @@ public class UITheme {
     @NotNull public UIColor scrollbarFG = UIColor.matBlueGrey300();
     public double scrollbarThickness = 12;
 
+    //Other
+    @Nullable public UnicodeFont headerFont;
+
 }

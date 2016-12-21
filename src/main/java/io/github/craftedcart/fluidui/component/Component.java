@@ -184,6 +184,10 @@ public class Component {
 
     public void setParentComponent(@Nullable Component parentComponent) {
         this.parentComponent = parentComponent;
+
+        if (parentComponent != null) {
+            setTheme(parentComponent.theme);
+        }
     }
 
     /**
@@ -365,13 +369,23 @@ public class Component {
         }
     }
 
-    public void onKey(int key, char keyChar) {
+    public void onKeyDown(int key, char keyChar) {
         OrderedMap<String, Component> childComponentsClone = new ListOrderedMap<>();
         childComponentsClone.putAll(childComponents);
 
         for (Map.Entry<String, Component> entry : childComponentsClone.entrySet()) {
             Component childComponent = entry.getValue();
-            childComponent.onKey(key, keyChar);
+            childComponent.onKeyDown(key, keyChar);
+        }
+    }
+
+    public void onKeyReleased(int key, char keyChar) {
+        OrderedMap<String, Component> childComponentsClone = new ListOrderedMap<>();
+        childComponentsClone.putAll(childComponents);
+
+        for (Map.Entry<String, Component> entry : childComponentsClone.entrySet()) {
+            Component childComponent = entry.getValue();
+            childComponent.onKeyReleased(key, keyChar);
         }
     }
 

@@ -45,15 +45,6 @@ public class Label extends Component {
     }
 
     @Override
-    public void setParentComponent(@Nullable Component parentComponent) {
-        super.setParentComponent(parentComponent);
-
-        if (parentComponent != null) {
-            setTheme(parentComponent.theme);
-        }
-    }
-
-    @Override
     public void setTheme(@NotNull UITheme theme) {
         super.setTheme(theme);
 

@@ -48,10 +48,6 @@ public class ListBox extends Panel {
     public void setParentComponent(@Nullable Component parentComponent) {
         super.setParentComponent(parentComponent);
 
-        if (parentComponent != null) {
-            setTheme(parentComponent.theme);
-        }
-
         setOnChildComponentNameChangedAction(this::onChildComponentNameChanged);
     }
 

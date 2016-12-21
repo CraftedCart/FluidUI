@@ -84,11 +84,25 @@ public abstract class FluidUIScreen extends Component implements IUIScreen {
      * @param key The key ID pressed
      */
     @Override
-    public void onKey(int key, char keyChar) {
+    public void onKeyDown(int key, char keyChar) {
         if (overlayUiScreen != null) {
-            overlayUiScreen.onKey(key, keyChar);
+            overlayUiScreen.onKeyDown(key, keyChar);
         } else {
-            super.onKey(key, keyChar);
+            super.onKeyDown(key, keyChar);
+        }
+    }
+
+    /**
+     * If you're overriding this, you should probably check if overlayUiScreen == null
+     *
+     * @param key The key ID pressed
+     */
+    @Override
+    public void onKeyReleased(int key, char keyChar) {
+        if (overlayUiScreen != null) {
+            overlayUiScreen.onKeyReleased(key, keyChar);
+        } else {
+            super.onKeyReleased(key, keyChar);
         }
     }
 
