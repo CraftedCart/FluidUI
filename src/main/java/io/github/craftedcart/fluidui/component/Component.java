@@ -348,7 +348,7 @@ public class Component {
                     plugin.onClick(button, mousePos);
                 }
 
-                if (onLMBAction != null) {
+                if (onLMBAction != null && button == 0) {
                     onLMBAction.execute();
                 }
             } else {

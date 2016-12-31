@@ -118,7 +118,7 @@ public class TextButton extends Label {
                 plugin.onClick(button, mousePos);
             }
 
-            if (onLMBAction != null && isEnabled) {
+            if (onLMBAction != null && isEnabled && button == 0) {
                 onLMBAction.execute();
             }
         }

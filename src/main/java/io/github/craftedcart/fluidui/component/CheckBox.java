@@ -24,7 +24,7 @@ public class CheckBox extends Button {
 
     @Override
     public void onClick(int button, PosXY mousePos) {
-        if (enableClicking) {
+        if (enableClicking && button == 0) {
             value = !value;
             updateColor();
         }
