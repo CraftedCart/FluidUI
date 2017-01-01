@@ -359,6 +359,33 @@ public class Component {
         }
     }
 
+    public void onClickReleased(int button, PosXY mousePos) {
+        if (enableClicking) {
+            OrderedMap<String, Component> childComponentsClone = new ListOrderedMap<>();
+            childComponentsClone.putAll(childComponents);
+
+            boolean hitChildComponent = false;
+            for (Map.Entry<String, Component> entry : childComponentsClone.entrySet()) {
+                Component childComponent = entry.getValue();
+
+                if (childComponent.mouseOver && childComponent.isVisible()) {
+                    hitChildComponent = true;
+                    childComponent.onClickReleased(button, mousePos);
+                }
+            }
+
+            if (!hitChildComponent) {
+                for (AbstractComponentPlugin plugin : plugins) {
+                    plugin.onClickReleased(button, mousePos);
+                }
+            } else {
+                for (AbstractComponentPlugin plugin : plugins) {
+                    plugin.onClickChildComponentReleased(button, mousePos);
+                }
+            }
+        }
+    }
+
     public void onClickAnywhere(int button, PosXY mousePos) {
         OrderedMap<String, Component> childComponentsClone = new ListOrderedMap<>();
         childComponentsClone.putAll(childComponents);

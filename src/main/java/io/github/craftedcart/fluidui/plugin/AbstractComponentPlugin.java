@@ -19,6 +19,8 @@ public abstract class AbstractComponentPlugin {
 
     public void onClick(int button, PosXY mousePos) {}
     public void onClickChildComponent(int button, PosXY mousePos) {}
+    public void onClickReleased(int button, PosXY mousePos) {}
+    public void onClickChildComponentReleased(int button, PosXY mousePos) {}
 
     public void onTopLeftPosChanged(PosXY newPos) {}
     public void onBottomRightPosChanged(PosXY newPos) {}

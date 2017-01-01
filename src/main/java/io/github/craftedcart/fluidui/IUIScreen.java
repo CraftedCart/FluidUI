@@ -14,6 +14,10 @@ public interface IUIScreen {
         //No-Op
     }
 
+    default void onClickReleased(int button, PosXY mousePos) {
+        //No-Op
+    }
+
     default void onClickAnywhere(int button, PosXY mousePos) {
         //No-Op
     }

@@ -81,6 +81,21 @@ public abstract class FluidUIScreen extends Component implements IUIScreen {
     /**
      * If you're overriding this, you should probably check if overlayUiScreen == null
      *
+     * @param button The mouse button clicked
+     * @param mousePos The position of the mouse
+     */
+    @Override
+    public void onClickReleased(int button, PosXY mousePos) {
+        if (overlayUiScreen == null) {
+            super.onClickReleased(button, mousePos);
+        } else {
+            overlayUiScreen.onClickReleased(button, mousePos);
+        }
+    }
+
+    /**
+     * If you're overriding this, you should probably check if overlayUiScreen == null
+     *
      * @param key The key ID pressed
      */
     @Override
