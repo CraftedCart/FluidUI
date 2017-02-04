@@ -148,7 +148,8 @@ public class Component {
             plugin.onPostDraw();
         }
 
-        Map<String, Component> childComponentsClone = new HashMap<>(childComponents);
+        OrderedMap<String, Component> childComponentsClone = new ListOrderedMap<>();
+        childComponentsClone.putAll(childComponents);
 
         for (Map.Entry<String, Component> entry : childComponentsClone.entrySet()) {
             Component childComponent = entry.getValue();
