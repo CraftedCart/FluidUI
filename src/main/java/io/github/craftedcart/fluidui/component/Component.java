@@ -20,7 +20,6 @@ import org.newdawn.slick.UnicodeFont;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
