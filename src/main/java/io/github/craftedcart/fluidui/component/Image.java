@@ -15,6 +15,7 @@ public class Image extends Component {
     @Nullable public Slice9PosXY textureSlice9;
     @NotNull public UIColor color = UIColor.pureWhite();
     @NotNull public EnumImageScaling imageScaling = EnumImageScaling.scale;
+    public boolean useStencil = false;
 
     public Image() {
         postInit();
@@ -55,15 +56,17 @@ public class Image extends Component {
             }
 
             if (textureSlice9 == null) {
-                UIUtils.setupStencilMask();
-                UIUtils.drawQuad(topLeftPx, bottomRightPx, UIColor.pureWhite());
-                UIUtils.setupStencilDraw();
+                if (useStencil) {
+                    UIUtils.setupStencilMask();
+                    UIUtils.drawQuad(topLeftPx, bottomRightPx, UIColor.pureWhite());
+                    UIUtils.setupStencilDraw();
+                }
                 color.bindColor();
                 UIUtils.drawTexturedQuad(
                         new PosXY(topLeftPx.x + this.width / 2 - width / 2, topLeftPx.y + this.height / 2 - height / 2),
                         new PosXY(topLeftPx.x + this.width / 2 + width / 2, topLeftPx.y + this.height / 2 + height / 2),
                         texture);
-                UIUtils.setupStencilEnd();
+                if (useStencil) UIUtils.setupStencilEnd();
             } else {
                 color.bindColor();
                 UIUtils.drawTexturedQuad(
@@ -91,4 +94,9 @@ public class Image extends Component {
     public void setImageScaling(@NotNull EnumImageScaling imageScaling) {
         this.imageScaling = imageScaling;
     }
+
+    public void setUseStencil(boolean useStencil) {
+        this.useStencil = useStencil;
+    }
+
 }
