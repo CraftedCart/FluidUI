@@ -82,6 +82,14 @@ public class UIColor {
         return matBlue900(1);
     }
 
+    public static UIColor matLightBlue(double a) {
+        return new UIColor(3, 169, 244);
+    }
+
+    public static UIColor matLightBlue() {
+        return matLightBlue(1);
+    }
+
     public static UIColor matWhite(double a) {
         return new UIColor(250, 250, 250, a);
     }
@@ -178,6 +186,14 @@ public class UIColor {
         return matOrange(1);
     }
 
+    public static UIColor matDeepOrange(double a) {
+        return new UIColor(255, 87, 24, a);
+    }
+
+    public static UIColor matDeepOrange() {
+        return matDeepOrange(1);
+    }
+
     public static UIColor matGreen(double a) {
         return new UIColor(76, 175, 80, a);
     }
@@ -202,12 +218,28 @@ public class UIColor {
         return matLightGreen(1);
     }
 
+    public static UIColor matLime(double a) {
+        return new UIColor(205, 220, 57, a);
+    }
+
+    public static UIColor matLime() {
+        return matLime(1);
+    }
+
     public static UIColor matYellow(double a) {
         return new UIColor(255, 235, 1, a);
     }
 
     public static UIColor matYellow() {
         return matYellow(1);
+    }
+
+    public static UIColor matAmber(double a) {
+        return new UIColor(255, 193, 7, a);
+    }
+
+    public static UIColor matAmber() {
+        return matAmber(1);
     }
 
     public static UIColor matIndigo(double a) {
@@ -296,6 +328,14 @@ public class UIColor {
 
     public static UIColor matCyan() {
         return matCyan(1);
+    }
+
+    public static UIColor matBrown(double a) {
+        return new UIColor(121, 85, 72, a);
+    }
+
+    public static UIColor matBrown() {
+        return matBrown(1);
     }
 
 }
